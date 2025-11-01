@@ -31,6 +31,7 @@ export class DatabaseService {
     this.db = await Database.load(dbPath)
     const migrations = new Migrations(this.db)
     await this.db?.execute("PRAGMA foreign_keys = ON;");
+    // await this.db?.execute("PRAGMA locking_mode = EXCLUSIVE")
     await migrations.runMigrations()
     if (await this.getBoardById(1) === null) {
       await this.createDbBase()
