@@ -3,6 +3,39 @@ import {copyFile, exists, create } from "@tauri-apps/plugin-fs";
 import { join, appConfigDir, BaseDirectory } from "@tauri-apps/api/path";
 import { load } from "@tauri-apps/plugin-store"
 import { DatabaseService } from "./dbClass";
+
+
+
+/**
+ * The function `getConfig` asynchronously loads a JSON configuration file and retrieves a specific key
+ * from it.
+ * @param {string} key - The `key` parameter in the `getConfig` function is a string that represents
+ * the specific configuration key that you want to retrieve from the `config.json` file.
+ * @returns The `getConfig` function is returning the value associated with the specified key from the
+ * `config.json` file after loading it asynchronously.
+ */
+export async function getConfig(key: string) {
+  const config = await load("config.json")
+
+  return await config.get(key)
+}
+
+/**
+ * The function `setConfig` asynchronously loads a JSON configuration file and sets a key-value pair in
+ * the configuration.
+ * @param {string} key - The `key` parameter is a string that represents the key under which the
+ * `value` will be stored in the configuration file.
+ * @param {unknown} value - The `value` parameter in the `setConfig` function is of type `unknown`,
+ * which means it can be any type. It is the value that you want to set for the specified `key` in the
+ * configuration file.
+ * @returns the result of setting the key-value pair in the config object.
+ */
+export async function setConfig(key: string, value: unknown) {
+  const config = await load("config.json")
+
+  return await config.set(key, value)
+}
+
 /**
  * This function allows the user to choose a folder to store a database, updating the
  * configuration and reloading the database if necessary.

@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { chooseDbFolder, getDbPath } from "@/lib/db/dbManager";
+import { chooseDbFolder, getDbPath, setConfig } from "@/lib/db/dbManager";
 
 type props = {
   dbService: DatabaseService;
@@ -29,18 +29,26 @@ type props = {
  */
 export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   const [checkedSync, setCheckedSync] = useState(false);
-  const [dbPath, setDbPath] = useState("");
+  const [dbPath, setDbPath] = useState<string | null>("");
   const [urlSync, setUrlSync] = useState<string | null>("");
   const [firstReload, setFirstReload] = useState<boolean>(true);
   const { t } = useTranslation();
   const languages = getLanguages();
 
-  function changeTheme(theme: string) {
+  async function changeTheme(theme: string) {
     if (theme === "system") {
       localStorage.removeItem("theme");
+      await setConfig("theme", "system");
     } else {
       localStorage.theme = theme ?? "system";
+      await setConfig("theme", theme ?? "system");
     }
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
   }
 
   useEffect(() => {
@@ -97,7 +105,6 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Select
               onValueChange={(value) => {
                 changeTheme(value);
-                dbService.updateOption("theme", value);
               }}
               defaultValue={localStorage.theme}
             >
@@ -116,12 +123,14 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Select
               onValueChange={(value) => {
                 changeLanguage(value);
-                dbService.updateOption("lang", value);
               }}
               defaultValue={getCurrentLanguage()}
             >
               <SelectTrigger>
-                <SelectValue placeholder={"Languages"} />
+                <SelectValue
+                  placeholder={"Languages"}
+                  defaultValue={getCurrentLanguage()}
+                />
               </SelectTrigger>
               <SelectContent>
                 {languages.map((lang) => (
@@ -152,8 +161,8 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
               >
                 {t("GoPlugin")}
               </button>*/}
-              <Input value={dbPath} disabled={true} />
-              <Button onClick={() => chooseDbFolder({ reloadDb, dbService })}>
+              <Input value={dbPath ?? "Erreur"} disabled={true} />
+              <Button onClick={async () => setDbPath(await chooseDbFolder({ reloadDb, dbService }))}>
                 {t("data_file")}
               </Button>
             </div>

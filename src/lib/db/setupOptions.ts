@@ -12,20 +12,6 @@ export async function setupOptions(db: Database) {
       console.log("Error createOptions version");
     }
   }
-  if ((await getOptionByKey("lang", db)) === null) {
-    try {
-      await createOption("lang", "fr", db);
-    } catch {
-      console.log("Error createOptions lang");
-    }
-  }
-  if ((await getOptionByKey("theme", db)) === null) {
-    try {
-      await createOption("theme", "system", db);
-    } catch {
-      console.log("Error createOptions theme");
-    }
-  }
   if ((await getOptionByKey("syncActive", db)) === null) {
     try {
       await createOption("syncActive", "false", db);

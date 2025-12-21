@@ -6,6 +6,7 @@ import enTranslation from "./locales/en-US.json";
 import frTranslation from "./locales/fr-FR.json";
 import deTranslation from "./locales/de.json";
 import esTranslation from "./locales/es.json";
+import { setConfig } from "./db/dbManager";
 
 /* This block of code is initializing the i18n (internationalization) library for localization. Here's a breakdown of what it's doing: */
 i18n
@@ -18,7 +19,6 @@ i18n
       de: { translation: deTranslation },
       es: { translation: esTranslation },
     },
-    lng: "fr-FR",
     supportedLngs: ["fr-FR", "en-US", "de", "es"],
     load: "all",
     fallbackLng: "en-US",
@@ -123,8 +123,9 @@ export function getLanguages() {
  * that represents the language code or identifier for the desired language to switch to. For example,
  * "en" for English, "es" for Spanish, "fr" for French, etc.
  */
-export function changeLanguage(language: string) {
+export async function changeLanguage(language: string) {
   i18n.changeLanguage(language);
+  await setConfig("lang", language)
 }
 
 export default i18n;

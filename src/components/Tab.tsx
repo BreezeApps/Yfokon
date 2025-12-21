@@ -3,6 +3,7 @@ import { ModalForm } from "./Modal/ModalForm";
 import { DatabaseService } from "../lib/db/dbClass";
 import { Board } from "@/lib/types/Board";
 import { getTextColor } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 type props = {
   dbService: DatabaseService;
@@ -102,14 +103,19 @@ export function Tabs({
         </div>
       </div>
 
-      <span
-        onClick={() => {
-          setShowConfig(true);
-        }}
-        className="flex h-7 w-7 cursor-pointer flex-row-reverse justify-self-end"
-      >
-        <img src="/icons/config.svg" className="dark:invert" />
-      </span>
+      <Tooltip>
+        <TooltipTrigger
+          className="flex h-7 w-7 cursor-pointer flex-row-reverse justify-self-end"
+          onClick={() => {
+            setShowConfig(true);
+          }}
+        >
+          <img className={`dark:invert`} src={"/icons/config.svg"} />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Config</p>
+        </TooltipContent>
+      </Tooltip>
     </>
   );
 }
