@@ -23,9 +23,6 @@ export function LoadApp() {
 
   async function initDatabase() {
     showLoading(t("loading_db"));
-    /* try {
-      await restoreState("main", StateFlags.ALL)
-    } catch (error) {} */
 
     if (dbService !== null) {
       await dbService.close();
@@ -47,7 +44,6 @@ export function LoadApp() {
     await config.set("lastOpenBoard", currentBoard.toString())
     await config.save()
     await config.close()
-    // await saveWindowState(StateFlags.ALL);
     await dbService?.close()
     exit()
   });
@@ -63,7 +59,6 @@ export function LoadApp() {
   return (
     <ErrorBoundary>
       <App dbService={dbService} reloadDb={initDatabase} currentBoard={currentBoard} setCurrentBoard={setCurrentBoard} />
-      <h1>{currentBoard}</h1>
     </ErrorBoundary>
   );
 }
