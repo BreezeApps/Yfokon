@@ -96,6 +96,11 @@
   "Help": "Aide",
   "Learn more": "En savoir plus",
   "About": "À propos",
+  "Version": "Version",
+  "BuildDate": "Date de Build",
+  "CreateBy": "Créé par",
+  "Email": "Email",
+  "WebSite": "Site Web",
   "Duedate": "Date d'échéance",
   "Status": "Statut",
   "NoDue": "Pas de date d'échéance",
@@ -119,5 +124,9 @@
   "Step4": "En cliquant sur ce bouton, tu peux ajouter une nouvelle liste",
   "Step6": "Ceci est une liste, pour la modiifer et la supprimer tu peux faire un clic droit sur le nom de la liste",
   "Step8": "Ceci est une tâche, pour la modifier et la supprimer tu peux faire un clic droit sur le nom de la tâche",
-  "Step9": "C’est bon, tu es prêt ! Tu connais maintenant les bases de Yfokon. Il ne reste plus qu’à te lancer et faire avancer tes projets."
+  "Step9": "C’est bon, tu es prêt ! Tu connais maintenant les bases de Yfokon. Il ne reste plus qu’à te lancer et faire avancer tes projets.",
+  "EraseOrUseTitle": "Ecrasez ou Utiliser ?",
+  "EraseOrUseText": "Voulez vous écraser la base de données ou l'utiliser ?",
+  "EraseOrUseOk": "Utiliser",
+  "EraseOrUseCancel": "Ecraser"
  }

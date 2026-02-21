@@ -444,8 +444,8 @@ function App({
         setOpen={setShowModal}
       />
       <div
-        style={{ height: "calc(100vh - 51px)" }}
-        className="mt-12 w-full dark:bg-gray-900 text-gray-900 dark:text-white"
+        /* style={{ height: "calc(100vh - 51px)" }} */
+        className="mt-15 w-full dark:bg-gray-900 text-gray-900 dark:text-white"
       >
         <ListContainer
           dbService={dbService}
@@ -460,9 +460,9 @@ function App({
         />
       </div>
       <div
-        className={`p-4 rounded-2xl fixed top-0 right-0 bg-[#cecece] dark:bg-gray-600 ${
+        className={`p-3 sm:p-4 rounded-2xl fixed bottom-4 right-4 sm:top-0 sm:bottom-auto sm:right-0 sm:rounded-none max-w-[calc(100%-2rem)] sm:max-w-sm bg-[#cecece] dark:bg-gray-600 ${
           showTaskInfo === true ? "" : "hidden"
-        }`}
+        } text-sm sm:text-base`}
       >
         <p>
           <strong>{t("Description")} :</strong> <br></br>

@@ -1,10 +1,9 @@
-import { open } from "@tauri-apps/plugin-dialog";
-import {copyFile, exists, create } from "@tauri-apps/plugin-fs";
+import { save, ask } from "@tauri-apps/plugin-dialog";
+import { copyFile, exists, create } from "@tauri-apps/plugin-fs";
 import { join, appConfigDir, BaseDirectory } from "@tauri-apps/api/path";
-import { load } from "@tauri-apps/plugin-store"
+import { load } from "@tauri-apps/plugin-store";
 import { DatabaseService } from "./dbClass";
-
-
+import { t } from "i18next";
 
 /**
  * The function `getConfig` asynchronously loads a JSON configuration file and retrieves a specific key
@@ -15,9 +14,9 @@ import { DatabaseService } from "./dbClass";
  * `config.json` file after loading it asynchronously.
  */
 export async function getConfig(key: string) {
-  const config = await load("config.json")
+  const config = await load("config.json");
 
-  return await config.get(key)
+  return await config.get(key);
 }
 
 /**
@@ -31,9 +30,9 @@ export async function getConfig(key: string) {
  * @returns the result of setting the key-value pair in the config object.
  */
 export async function setConfig(key: string, value: unknown) {
-  const config = await load("config.json")
+  const config = await load("config.json");
 
-  return await config.set(key, value)
+  return await config.set(key, value);
 }
 
 /**
@@ -44,38 +43,83 @@ export async function setConfig(key: string, value: unknown) {
  * or an error occurs during the process, it returns `null`.
  */
 export async function chooseDbFolder(): Promise<string | null> {
-  const prevPath = await getDbPath()
-  const folder = await open({
-    directory: true,
-    multiple: false,
+  const prevPath = await getDbPath();
+  const folder = await save({
+    canCreateDirectories: true,
     defaultPath: prevPath,
     title: "Choisissez où stocker votre base de données Yfokon",
   });
 
   if (!folder) return null;
 
-  return folder as string;
-}
+  const split = folder.split(".");
 
+  split[split.length - 1] = "yfdb";
+
+  return split.join(".");
+}
 
 /**
  * The function `setDbFolder` updates the database folder path, closes the current database connection,
  * moves the database file to the new path if it doesn't exist, and reloads the database.
  * @param  - 1. `reloadDb`: A function that reloads the database.
  */
-export async function setDbFolder({ reloadDb, dbService, newPath }: { reloadDb: () => Promise<void>, dbService: DatabaseService, newPath: string }) {
-  const config = await load("config.json")
-  const prevPath = await getDbPath()
-  await dbService.close()
+export async function setDbFolder({
+  reloadDb,
+  dbService,
+  newPath,
+}: {
+  reloadDb: () => Promise<void>;
+  dbService: DatabaseService;
+  newPath: string;
+}) {
+  const config = await load("config.json");
+  const prevPath = await getDbPath();
+  await dbService.close();
 
-  await config.set("dbFolder", newPath)
-  await config.save()
+  await config.set("dbFolder", newPath);
+  await config.save();
 
-  if(!(await exists(await join(newPath, "Yfokon.yfdb")))) {
-    await copyFile(prevPath, await join(newPath, "Yfokon.yfdb"));
+  if (!(await exists(await join(newPath)))) {
+    await copyFile(prevPath, await join(newPath));
   }
 
-  await reloadDb()
+  const isUse = await ask(t("EraseOrUseText"), {
+    okLabel: t("EraseOrUseOk"),
+    cancelLabel: t("EraseOrUseCancel"),
+    kind: "warning",
+    title: t("EraseOrUseTitle"),
+  });
+  if (!isUse) {
+    await copyFile(prevPath, await join(newPath));
+  }
+
+  await reloadDb();
+}
+
+export async function setDbFolderNotLoaded({ newPath }: { newPath: string }) {
+  const config = await load("config.json");
+  const prevPath = await getDbPath();
+
+  await config.set("dbFolder", newPath);
+  await config.save();
+
+  if (!(await exists(await join(newPath)))) {
+    try {
+      await copyFile(prevPath, await join(newPath));
+    } catch (_) {
+      await create(await join(newPath));
+    }
+  }
+  const isUse = await ask(t("EraseOrUseText"), {
+    okLabel: t("EraseOrUseOk"),
+    cancelLabel: t("EraseOrUseCancel"),
+    kind: "warning",
+    title: t("EraseOrUseTitle"),
+  });
+  if (!isUse) {
+    await copyFile(prevPath, await join(newPath));
+  }
 }
 
 /**
@@ -86,27 +130,16 @@ export async function setDbFolder({ reloadDb, dbService, newPath }: { reloadDb: 
  * `dbFolder` value to the result of `appConfigDir()`, saves the configuration, and creates a database
  * file named "Yfokon.yfdb" in the app's configuration directory
  */
-export async function getDbFolder(): Promise<string> {
-  const config = await load("config.json")
-  const dbFolder = await config.get("dbFolder");
-  if(dbFolder === null || dbFolder === undefined) {
-    await config.set("dbFolder", await appConfigDir())
-    await config.save()
-    try {
-      await create("Yfokon.yfdb", { baseDir: BaseDirectory.AppConfig })
-    } catch (_) {}
-    return (await appConfigDir());
-  }
-  return dbFolder as string
-}
-
-/**
- * The function `getDbPath` returns the path to a database file named "Yfokon.yfdb" within a specified
- * folder.
- * @returns The function `getDbPath` is returning a Promise that resolves to the path of the database
- * file "Yfokon.yfdb" within the folder obtained from the `getDbFolder` function.
- */
 export async function getDbPath(): Promise<string> {
-  const folder = await getDbFolder();
-  return await join(folder, "Yfokon.yfdb");
+  const config = await load("config.json");
+  const dbFolder = await config.get("dbFolder");
+  if (dbFolder === null || dbFolder === undefined) {
+    await config.set("dbFolder", await appConfigDir());
+    await config.save();
+    try {
+      await create("Yfokon.yfdb", { baseDir: BaseDirectory.AppConfig });
+    } catch (_) {}
+    return await appConfigDir();
+  }
+  return dbFolder as string;
 }

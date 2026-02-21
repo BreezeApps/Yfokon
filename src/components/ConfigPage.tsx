@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { chooseDbFolder, getDbPath, setConfig, setDbFolder } from "@/lib/db/dbManager";
+import { AboutPage } from "./AboutPage";
 
 type props = {
   dbService: DatabaseService;
@@ -34,6 +35,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   const [theme, setTheme] = useState<string>("");
   const [urlSync, setUrlSync] = useState<string | null>("");
   const [firstReload, setFirstReload] = useState<boolean>(true);
+  const [showAbout, setShowAbout] = useState<boolean>(false);
   const { t } = useTranslation();
   const languages = getLanguages();
 
@@ -94,9 +96,11 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   }, [checkedSync, urlSync]);
 
   return (
+    <>
+    <AboutPage show={showAbout} setShow={setShowAbout} />
     <div
       hidden={!show}
-      className={`z-[49] top-0 h-full w-full absolute bg-black/50`}
+      className={`z-[48] top-0 h-full w-full absolute bg-black/50`}
     >
       {/* <Button onClick={() => setShow(false)} variant={"ghost"}>
         <img className="h-6 ml-2" src="/icons/fermer.svg" />
@@ -221,6 +225,9 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
           </div>
         </div>
         <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => setShowAbout(true)} style={{ cursor: "pointer" }} className="mr-2">
+            {t("A propos")}
+          </Button>
           <Button onClick={() => setShow(false)} style={{ cursor: "pointer" }} className="mr-2">
             {t("Cancel")}
           </Button>
@@ -230,5 +237,6 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
         </div>
       </form>
     </div>
+    </>
   );
 }

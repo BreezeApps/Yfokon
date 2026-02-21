@@ -30,10 +30,6 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
 
   const hideLoading = () => setVisible(false);
 
-  const showError = () => {
-    alert("error")
-  }
-
   return (
     <LoadingContext.Provider value={{ showLoading, hideLoading }}>
       {children}

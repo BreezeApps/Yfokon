@@ -43,7 +43,7 @@ export function LoadApp() {
   useEffect(() => {
     async function init() {
       const config = await load("config.json");
-      if (await config.has("dbFolder")) {
+      if (!(await config.has("dbFolder"))) {
         setShowFirstScreen(true);
       }
     }

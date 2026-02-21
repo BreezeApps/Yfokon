@@ -184,7 +184,7 @@ export function ModalForm({
         <Dialog.Overlay className={`fixed inset-0 bg-black/50`} />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg"
+          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto max-w-[calc(100%-2rem)] sm:max-w-lg"
         >
           <Dialog.Title className="text-lg font-bold">
             {t(
@@ -208,6 +208,7 @@ export function ModalForm({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="w-full"
             />
           </div>
           {type === "task" && (
@@ -216,18 +217,13 @@ export function ModalForm({
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="w-full"
               />
             </div>
           )}
           {type === "task" && (
             <div className="mt-4">
               <Label>{t("Date")}</Label>
-              {/* <input
-                type="datetime-local"
-                className="w-full border p-2 rounded"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              /> */}
               <CustomProvider
                 theme={
                   localStorage.getItem("theme") as "light" | "dark" | undefined
@@ -253,6 +249,7 @@ export function ModalForm({
                   type="color"
                   value={color ? color : "#000000"}
                   onChange={(e) => setColor(e.target.value)}
+                  className="w-full h-10"
                 />
               </div>
             ))}
@@ -263,16 +260,17 @@ export function ModalForm({
                 type="color"
                 value={color ? color : "#000000"}
                 onChange={(e) => setColor(e.target.value)}
+                className="w-full h-10"
               />
             </div>
           )}
 
-          <div className="mt-4 flex justify-end space-x-2">
+          <div className="mt-6 flex flex-col sm:flex-row justify-end gap-2">
             <Dialog.Close>
-              <Button variant={"secondary"}>{t("Cancel")}</Button>
+              <Button variant={"secondary"} className="w-full sm:w-auto">{t("Cancel")}</Button>
             </Dialog.Close>
             <Dialog.Close>
-              <Button onClick={handleSubmit}>
+              <Button onClick={handleSubmit} className="w-full sm:w-auto">
                 {t(
                   previousData !== undefined
                     ? type === "task"
