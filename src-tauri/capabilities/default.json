@@ -13,16 +13,24 @@
     "dialog:default",
     "dialog:allow-ask",
     "dialog:allow-message",
-    "updater:default",
-    "updater:allow-check",
-    "updater:allow-download-and-install",
     "notification:default",
     "fs:default",
     {
       "identifier": "http:default",
       "all": true,
-      "allow": [{ "url": "http://*" }, { "url": "https://" }],
-      "deny": [{ "url": "https://private.tauri.app" }]
+      "allow": [
+        {
+          "url": "http://*"
+        },
+        {
+          "url": "https://"
+        }
+      ],
+      "deny": [
+        {
+          "url": "https://private.tauri.app"
+        }
+      ]
     },
     "fs:allow-app-write",
     "fs:allow-appconfig-write",

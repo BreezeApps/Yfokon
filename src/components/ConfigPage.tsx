@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { changeLanguage, getCurrentLanguage, getLanguages } from "../lib/i18n";
+import { changeLanguage, getCurrentLanguage, getLanguages, setLanguageFromString } from "../lib/i18n";
 import { useEffect, useState } from "react";
 import { DatabaseService } from "../lib/db/dbClass";
 import { message } from "@tauri-apps/plugin-dialog";
@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { chooseDbFolder, getDbPath } from "@/lib/db/dbManager";
+import { chooseDbFolder, getDbPath, setConfig, setDbFolder } from "@/lib/db/dbManager";
+import { AboutPage } from "./AboutPage";
 
 type props = {
   dbService: DatabaseService;
@@ -29,18 +30,43 @@ type props = {
  */
 export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   const [checkedSync, setCheckedSync] = useState(false);
-  const [dbPath, setDbPath] = useState("");
+  const [dbPath, setDbPath] = useState<string | null>("");
+  const [language, setLanguage] = useState<string>("");
+  const [theme, setTheme] = useState<string>("");
   const [urlSync, setUrlSync] = useState<string | null>("");
   const [firstReload, setFirstReload] = useState<boolean>(true);
+  const [showAbout, setShowAbout] = useState<boolean>(false);
   const { t } = useTranslation();
   const languages = getLanguages();
 
-  function changeTheme(theme: string) {
+  async function changeTheme(theme: string) {
+    setTheme(theme)
     if (theme === "system") {
       localStorage.removeItem("theme");
     } else {
       localStorage.theme = theme ?? "system";
     }
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches),
+    );
+  }
+
+  async function saveTheme(theme: string) {
+    if (theme === "system") {
+      await setConfig("theme", "system");
+    } else {
+      await setConfig("theme", theme ?? "system");
+    }
+  }
+
+  function saveParams() {
+    setDbFolder({ reloadDb, dbService, newPath: dbPath || "" })
+    setLanguageFromString(language)
+    saveTheme(theme)
+    setShow(false)
   }
 
   useEffect(() => {
@@ -49,7 +75,9 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
     async function firstload() {
       setDbPath(await getDbPath());
       setCheckedSync(
-        (await dbService.getOptionByKey("syncActive")) === "true" ? true : false
+        (await dbService.getOptionByKey("syncActive")) === "true"
+          ? true
+          : false,
       );
       setUrlSync(await dbService.getOptionByKey("syncUrl"));
     }
@@ -60,7 +88,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
     async function updateOptions() {
       await dbService.updateOption(
         "syncActive",
-        checkedSync === true ? "true" : "false"
+        checkedSync === true ? "true" : "false",
       );
       await dbService.updateOption("syncUrl", urlSync === null ? "" : urlSync);
     }
@@ -68,9 +96,11 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   }, [checkedSync, urlSync]);
 
   return (
+    <>
+    <AboutPage show={showAbout} setShow={setShowAbout} />
     <div
       hidden={!show}
-      className={`z-[49] top-0 h-full w-full absolute bg-black/50`}
+      className={`z-[48] top-0 h-full w-full absolute bg-black/50`}
     >
       {/* <Button onClick={() => setShow(false)} variant={"ghost"}>
         <img className="h-6 ml-2" src="/icons/fermer.svg" />
@@ -97,7 +127,6 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Select
               onValueChange={(value) => {
                 changeTheme(value);
-                dbService.updateOption("theme", value);
               }}
               defaultValue={localStorage.theme}
             >
@@ -116,12 +145,15 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Select
               onValueChange={(value) => {
                 changeLanguage(value);
-                dbService.updateOption("lang", value);
+                setLanguage(value)
               }}
               defaultValue={getCurrentLanguage()}
             >
               <SelectTrigger>
-                <SelectValue placeholder={"Languages"} />
+                <SelectValue
+                  placeholder={"Languages"}
+                  defaultValue={getCurrentLanguage()}
+                />
               </SelectTrigger>
               <SelectContent>
                 {languages.map((lang) => (
@@ -139,9 +171,6 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
           </h2>
         </div> */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
-            {t("Advanced_Settings")}
-          </h2>
           <div>
             <div className="space-y-2">
               {/*<button
@@ -152,10 +181,14 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
               >
                 {t("GoPlugin")}
               </button>*/}
-              <Input value={dbPath} disabled={true} />
-              <Button onClick={() => chooseDbFolder({ reloadDb, dbService })}>
+              <Button
+                onClick={async () =>
+                  setDbPath(await chooseDbFolder() || dbPath)
+                }
+              >
                 {t("data_file")}
               </Button>
+              <Input value={dbPath ?? "Erreur"} disabled={true} />
             </div>
             <div id="backup-dir" className="flex space-x-4">
               <Button
@@ -178,28 +211,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
               >
                 {t("Make_Backup")}
               </Button>
-              {/* <button
-                type="button"
-                id="backup-button"
-                onClick={async () => {
-                  const isValid = await dbService.createBackup()
-                  if (isValid) {
-                    message(t("Backup_Success_Title"), {
-                      title: t("Backup_Success"),
-                      kind: "info",
-                    })
-                  } else {
-                    message(t("Backup_Error_Title"), {
-                      title: t("Backup_Error"),
-                      kind: "error",
-                    })
-                  }
-                }}
-                className="rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 transition-colors duration-300 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                {t("Make_Backup")}
-              </button> */}
-              <Button
+              {/* <Button
                 type="button"
                 id="backup-import-button"
                 // onClick={async () => {console.log(await dbService.importBackup())}}
@@ -208,25 +220,23 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
                 }}
               >
                 {t("Backup_Import")}
-              </Button>
-              {/* <button
-                type="button"
-                id="backup-import-button"
-                // onClick={async () => {console.log(await dbService.importBackup())}}
-                onClick={() => {
-                  message(t("Future_Function"), { kind: "warning" });
-                }}
-                className="rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 transition-colors duration-300 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                {t("Backup_Import")}
-              </button> */}
+              </Button> */}
             </div>
           </div>
         </div>
-        <Button onClick={() => setShow(false)} style={{ position: "static" }}>
-          {t("Close")}
-        </Button>
+        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => setShowAbout(true)} style={{ cursor: "pointer" }} className="mr-2">
+            {t("A propos")}
+          </Button>
+          <Button onClick={() => setShow(false)} style={{ cursor: "pointer" }} className="mr-2">
+            {t("Cancel")}
+          </Button>
+          <Button onClick={() => saveParams()} style={{ cursor: "pointer" }}>
+            {t("Save")}
+          </Button>
+        </div>
       </form>
     </div>
+    </>
   );
 }

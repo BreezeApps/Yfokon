@@ -3,6 +3,8 @@ import { ModalForm } from "./Modal/ModalForm";
 import { DatabaseService } from "../lib/db/dbClass";
 import { Board } from "@/lib/types/Board";
 import { getTextColor } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { t } from "i18next";
 
 type props = {
   dbService: DatabaseService;
@@ -15,7 +17,7 @@ type props = {
     _date?: Date,
     color?: string,
     _collection_id?: string,
-    _id?: number
+    _id?: number,
   ) => void;
   reloadList?: boolean;
   setReloadList: (reload: boolean) => void;
@@ -41,6 +43,24 @@ export function Tabs({
     { id: 0, name: "test", color: "0" },
   ]);
 
+  const handleCreateCollection = async (
+    _type: "board" | "collection" | "task",
+    name: string,
+    _description?: string,
+    _date?: Date,
+    color?: string,
+    _collection_id?: string,
+    _id?: number,
+  ) => {
+    await dbService.createCollection({
+      board_id: currentBoard,
+      names: name,
+      color: color === undefined ? null : color,
+      id: 0,
+    });
+    setReloadList(true);
+  };
+
   useEffect(() => {
     async function fetchBoards() {
       setAllBoards(await dbService.getAllBoards());
@@ -63,12 +83,12 @@ export function Tabs({
                   }}
                   style={{
                     height: "34px",
-                    minWidth: "80px", // largeur minimale
-                    maxWidth: "200px", // largeur max
-                    flex: "1 1 auto", // occupe l’espace dispo et peut se réduire
+                    minWidth: window.innerWidth < 768 ? "60px" : "80px",
+                    maxWidth: "100%",
+                    flex: "1 1 auto",
                     textAlign: "center",
                     lineHeight: "22px",
-                    padding: "0 8px",
+                    padding: "0 6px",
                     margin: "1px 0 0 0",
                     border: "1px solid gray",
                     borderBottom:
@@ -83,14 +103,25 @@ export function Tabs({
                         ? "var(--color-gray-900)"
                         : board.color,
                     color: getTextColor(
-                      board?.color !== null ? board.color : "#101828"
+                      board?.color !== null ? board.color : "#101828",
                     ),
-                    whiteSpace: "nowrap", // évite le retour à la ligne
+                    whiteSpace: "nowrap",
                     overflow: "hidden",
-                    textOverflow: "ellipsis", // points de suspension si le texte est trop long
+                    textOverflow: "ellipsis",
+                    fontSize: window.innerWidth < 768 ? "0.75rem" : "1rem",
                   }}
                 >
                   {board.name}
+                  {currentBoard === board.id ? (
+                    <ModalForm
+                      id="three-step"
+                      type="collection"
+                      onCreate={handleCreateCollection}
+                      classname="pl-6 pt-3"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </button>
               ))}
             <ModalForm
@@ -102,14 +133,19 @@ export function Tabs({
         </div>
       </div>
 
-      <span
-        onClick={() => {
-          setShowConfig(true);
-        }}
-        className="flex h-7 w-7 cursor-pointer flex-row-reverse justify-self-end"
-      >
-        <img src="/icons/config.svg" className="dark:invert" />
-      </span>
+      <Tooltip>
+        <TooltipTrigger
+          className="flex h-7 w-7 cursor-pointer flex-row-reverse justify-self-end"
+          onClick={() => {
+            setShowConfig(true);
+          }}
+        >
+          <img className={`dark:invert`} src={"/icons/config.svg"} />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t("app_config")}</p>
+        </TooltipContent>
+      </Tooltip>
     </>
   );
 }

@@ -25,6 +25,7 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
   const showLoading = (msg?: string) => {
     if (msg) setMessage(msg);
     setVisible(true);
+    /* setTimeout(() => showError(), 3*1000) */
   };
 
   const hideLoading = () => setVisible(false);

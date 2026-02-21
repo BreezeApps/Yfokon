@@ -1,7 +1,7 @@
 import Database from "@tauri-apps/plugin-sql";
 import * as path from '@tauri-apps/api/path';
 import { save, open } from "@tauri-apps/plugin-dialog";
-import { copyFile, rename } from '@tauri-apps/plugin-fs';
+import { copyFile } from '@tauri-apps/plugin-fs';
 
 import { Board } from "../types/Board";
 import { Collection } from "../types/Collection";
@@ -31,6 +31,7 @@ export class DatabaseService {
     this.db = await Database.load(dbPath)
     const migrations = new Migrations(this.db)
     await this.db?.execute("PRAGMA foreign_keys = ON;");
+    // await this.db?.execute("PRAGMA locking_mode = EXCLUSIVE")
     await migrations.runMigrations()
     if (await this.getBoardById(1) === null) {
       await this.createDbBase()
@@ -44,12 +45,11 @@ export class DatabaseService {
   async createBackup(): Promise<boolean> {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, "_");
     const filePath = await save({
-      defaultPath: (await path.downloadDir()) + "/" + `task_backup_${date}.yapdb`,
+      defaultPath: (await path.downloadDir()) + "/" + `task_backup_${date}.yfdb`,
     });
     if (!filePath) return false;
     try {
-      await this.db?.execute(`VACUUM INTO '${filePath.replace(/\.yapdb$/, ".db")}';`);
-      rename(filePath.replace(/\.yapdb$/, ".db"), filePath.replace(/\.db$/, ".yapdb"));
+      await this.db?.execute(`VACUUM INTO '${filePath}';`);
     } catch (error) {
       console.error("Error creating backup:", error);
       return false;

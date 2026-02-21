@@ -1,14 +1,13 @@
-import { check } from "@tauri-apps/plugin-updater";
-import { ask, message } from "@tauri-apps/plugin-dialog";
-import { openUrl } from "@tauri-apps/plugin-opener"
+/* import { ask, message } from "@tauri-apps/plugin-dialog";
+import { openUrl } from "@tauri-apps/plugin-opener" */
 
 /**
  * The function `checkForAppUpdates` checks for available updates for an application and prompts the
  * user to update if one is available.
  */
-export async function checkForAppUpdates(onUserClick: boolean) {
+/* export async function checkForAppUpdates(onUserClick: boolean) {
   try {
-    const update = await check();
+    const update = null;
     if (!update) {
       console.log("No update available");
     } else if (update) {
@@ -33,4 +32,4 @@ export async function checkForAppUpdates(onUserClick: boolean) {
       });
     }
   } catch (error) {}
-}
+} */

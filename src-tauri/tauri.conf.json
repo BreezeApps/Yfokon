@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Yfokon",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "identifier": "fr.breezeapps.yfokon",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -12,16 +12,7 @@
   "plugins": {
     "sql": {
       "preload": ["sqlite:tasks.db"]
-    },
-    "updater": {
-        "active": true,
-        "windows": {
-          "installMode": "passive"
-        },
-        "endpoints": ["https://github.com/BreezeApps/Yfokon/releases/latest/download/latest.json"],
-        "dialog": true,
-        "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ1QkFCNDI4OUE2QTYyNjMKUldSalltcWFLTFM2MVhrTTR4ZkZZZFhZWWVlMVN6b2J0dUw0b05IS3NhSVlHbHpTbER4dWFpaUsK"
-      }
+    }
   },
   "app": {
     "windows": [
@@ -38,7 +29,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["deb", "rpm", "nsis", "msi", "app", "dmg"],
+    "targets": ["deb", "appimage", "rpm", "nsis", "msi", "app", "dmg"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -49,15 +40,23 @@
     "category": "Utility",
     "shortDescription": "Gestionnaire de tâches moderne et rapide.",
     "longDescription": "Yfokon est une application open-source permettant de gérer facilement ses tâches avec une interface moderne et fluide.",
-    "linux": {
-      "deb": {
-        "depends": ["libwebkit2gtk-4.0-37", "libgtk-3-0"]
-      }
-    },
     "externalBin": [],
     "copyright": "Copyright © 2025 BreezeApps",
     "license": "",
-    "createUpdaterArtifacts": true,
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": false,
+        "files": {}
+      },
+      "deb": {
+        "files": {}
+      },
+      "rpm": {
+        "epoch": 0,
+        "files": {},
+        "release": "1"
+      }
+    },
     "windows": {
       "allowDowngrades": true,
       "certificateThumbprint": null,

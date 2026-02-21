@@ -24,6 +24,7 @@ import { BoardPDF } from "./components/pdf/Board";
 import ContextMenu from "./components/contextMenu";
 import { OnBoarding } from "./components/OnBoarding";
 import { changeLanguage } from "./lib/i18n";
+import { getConfig } from "./lib/db/dbManager";
 
 /**
  * The `App` function in this TypeScript React component manages the state and functionality for task
@@ -41,12 +42,12 @@ function App({
   dbService,
   reloadDb,
   currentBoard,
-  setCurrentBoard
+  setCurrentBoard,
 }: {
   dbService: DatabaseService;
   reloadDb: () => Promise<void>;
   currentBoard: number;
-  setCurrentBoard: (id: number) => void
+  setCurrentBoard: (id: number) => void;
 }) {
   const [showConfig, setShowConfig] = useState<boolean>(false);
   const [runBoarding, setRunBoarding] = useState<boolean>(false);
@@ -68,25 +69,18 @@ function App({
       }
     | undefined
   >(undefined);
-  const [allBoards, setAllBoards] = useState<{ id: number; name: string }[]>([
-    { id: 0, name: "test" },
-  ]);
+  const [allBoards, setAllBoards] = useState<
+    { id: number; name: string; color: string | null }[]
+  >([{ id: 0, name: "test", color: null }]);
   const [showTaskInfo, setShowTaskInfo] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
   const { show } = useContextMenu();
 
   async function reloadDatabase() {
-    await reloadDb()
-    setReloadList(true)
+    await reloadDb();
+    setReloadList(true);
   }
-
-  document.documentElement.classList.toggle(
-    "dark",
-    localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-  );
 
   const handleCreateBoard = async (
     _type: "board" | "collection" | "task",
@@ -97,9 +91,13 @@ function App({
     _collection_id?: string,
     _id?: number
   ) => {
-    await dbService?.createBoard({ id: 0, name: name, color: color === undefined ? null : color });
-    const allBoards = await dbService.getAllBoards()
-    setCurrentBoard(allBoards[allBoards.length - 1].id)
+    await dbService?.createBoard({
+      id: 0,
+      name: name,
+      color: color === undefined ? null : color,
+    });
+    const allBoards = await dbService.getAllBoards();
+    setCurrentBoard(allBoards[allBoards.length - 1].id);
     setReloadList(true);
   };
 
@@ -116,8 +114,9 @@ function App({
       await dbService?.updateBoard({
         id: id === undefined ? 0 : id,
         name: name,
-        color: color === undefined ? "0" : color
+        color: color === undefined ? "0" : color,
       });
+      window.location.reload();
     } else if (type === "collection") {
       await dbService?.updateCollection({
         id: id === undefined ? 0 : id,
@@ -159,6 +158,7 @@ function App({
       setEditInfo({
         id: boardId,
         name: board?.name === undefined ? "" : board.name,
+        color: board?.color === null ? "" : board?.color,
       });
       setShowModal(true);
       // return (
@@ -347,28 +347,38 @@ function App({
       }
     }
     async function initBoard() {
-      setCurrentBoard(parseInt((await dbService.getOptionByKey("lastOpenBoard")) ?? "1"))
+      setCurrentBoard(
+        parseInt((await dbService.getOptionByKey("lastOpenBoard")) ?? "1")
+      );
     }
-    initBoard()
+    initBoard();
     handleNotificationPermission();
   }, []);
 
   useEffect(() => {
     const initOptions = async () => {
-      const theme = await dbService.getOptionByKey("theme");
+      const theme = await getConfig("theme");
+      const lang = await getConfig("lang");
       if (theme === "system") {
         localStorage.removeItem("theme");
       } else {
         localStorage.theme = theme ?? "system";
       }
-      const lang = await dbService.getOptionByKey("lang");
-      changeLanguage(lang ?? "en-US");
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+      );
+      changeLanguage(typeof lang === "string" ? lang ?? "en-US" : "en-US");
+      setReloadList(false)
     };
     const initBoards = async () => {
       setAllBoards((await dbService?.getAllBoards()) ?? []);
+      setReloadList(false)
     };
     initBoards();
-    initOptions()
+    initOptions();
   }, [reloadList]);
 
   // const handleCreateTask = async (name: string, description: string) => {
@@ -433,13 +443,15 @@ function App({
         open={showModal}
         setOpen={setShowModal}
       />
-      <div style={{ height: "calc(100vh - 51px)" }} className="mt-12 w-full dark:bg-gray-900 text-gray-900 dark:text-white">
+      <div
+        /* style={{ height: "calc(100vh - 51px)" }} */
+        className="mt-15 w-full dark:bg-gray-900 text-gray-900 dark:text-white"
+      >
         <ListContainer
           dbService={dbService}
           boardId={currentBoard}
           reloadList={reloadList}
           setReloadList={setReloadList}
-          currentBoard={currentBoard}
           contextMenuCollection={displayCollectionMenu}
           contextMenuTask={displayTaskMenu}
           setDescription={setDescription}
@@ -448,9 +460,9 @@ function App({
         />
       </div>
       <div
-        className={`p-4 rounded-2xl fixed top-0 right-0 bg-[#cecece] dark:bg-gray-600 ${
+        className={`p-3 sm:p-4 rounded-2xl fixed bottom-4 right-4 sm:top-0 sm:bottom-auto sm:right-0 sm:rounded-none max-w-[calc(100%-2rem)] sm:max-w-sm bg-[#cecece] dark:bg-gray-600 ${
           showTaskInfo === true ? "" : "hidden"
-        }`}
+        } text-sm sm:text-base`}
       >
         <p>
           <strong>{t("Description")} :</strong> <br></br>

@@ -8,6 +8,7 @@ import { t } from "i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import { load } from "@tauri-apps/plugin-store";
+import { FirstStartScreen } from "./components/FirstStartScreen";
 
 /**
  * The `LoadApp` function in TypeScript React initializes a database service, manages the current board
@@ -19,13 +20,11 @@ import { load } from "@tauri-apps/plugin-store";
 export function LoadApp() {
   const [dbService, setDbService] = useState<DatabaseService | null>(null);
   const [currentBoard, setCurrentBoard] = useState<number>(1);
+  const [showFirstScreen, setShowFirstScreen] = useState<boolean>(false);
   const { showLoading, hideLoading } = useLoadingScreen();
 
   async function initDatabase() {
     showLoading(t("loading_db"));
-    /* try {
-      await restoreState("main", StateFlags.ALL)
-    } catch (error) {} */
 
     if (dbService !== null) {
       await dbService.close();
@@ -35,21 +34,30 @@ export function LoadApp() {
 
     const service = await DatabaseService.create();
     setDbService(service);
-    const config = await load("config.json")
-    setCurrentBoard(parseInt(await config.get("lastOpenBoard") ?? "1"))
+    const config = await load("config.json");
+    setCurrentBoard(parseInt((await config.get("lastOpenBoard")) ?? "1"));
 
     hideLoading();
   }
 
+  useEffect(() => {
+    async function init() {
+      const config = await load("config.json");
+      if (!(await config.has("dbFolder"))) {
+        setShowFirstScreen(true);
+      }
+    }
+    init();
+  }, []);
+
   getCurrentWindow().onCloseRequested(async (event) => {
     event.preventDefault();
-    const config = await load("config.json")
-    await config.set("lastOpenBoard", currentBoard.toString())
-    await config.save()
-    await config.close()
-    // await saveWindowState(StateFlags.ALL);
-    await dbService?.close()
-    exit()
+    const config = await load("config.json");
+    await config.set("lastOpenBoard", currentBoard.toString());
+    await config.save();
+    await config.close();
+    await dbService?.close();
+    exit();
   });
 
   useEffect(() => {
@@ -62,8 +70,16 @@ export function LoadApp() {
 
   return (
     <ErrorBoundary>
-      <App dbService={dbService} reloadDb={initDatabase} currentBoard={currentBoard} setCurrentBoard={setCurrentBoard} />
-      <h1>{currentBoard}</h1>
+      {showFirstScreen ? (
+        <FirstStartScreen show={setShowFirstScreen} />
+      ) : (
+        <App
+          dbService={dbService}
+          reloadDb={initDatabase}
+          currentBoard={currentBoard}
+          setCurrentBoard={setCurrentBoard}
+        />
+      )}
     </ErrorBoundary>
   );
 }
