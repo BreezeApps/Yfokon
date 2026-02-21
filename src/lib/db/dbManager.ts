@@ -43,30 +43,39 @@ export async function setConfig(key: string, value: unknown) {
  * the selected folder path where the database will be stored. If the user cancels the folder selection
  * or an error occurs during the process, it returns `null`.
  */
-export async function chooseDbFolder({ reloadDb, dbService }: { reloadDb: () => Promise<void>, dbService: DatabaseService }): Promise<string | null> {
-  const config = await load("config.json")
+export async function chooseDbFolder(): Promise<string | null> {
   const prevPath = await getDbPath()
   const folder = await open({
     directory: true,
     multiple: false,
-    defaultPath: await getDbFolder(),
+    defaultPath: prevPath,
     title: "Choisissez où stocker votre base de données Yfokon",
   });
 
   if (!folder) return null;
 
+  return folder as string;
+}
+
+
+/**
+ * The function `setDbFolder` updates the database folder path, closes the current database connection,
+ * moves the database file to the new path if it doesn't exist, and reloads the database.
+ * @param  - 1. `reloadDb`: A function that reloads the database.
+ */
+export async function setDbFolder({ reloadDb, dbService, newPath }: { reloadDb: () => Promise<void>, dbService: DatabaseService, newPath: string }) {
+  const config = await load("config.json")
+  const prevPath = await getDbPath()
   await dbService.close()
 
-  await config.set("dbFolder", folder)
+  await config.set("dbFolder", newPath)
   await config.save()
 
-  if(!await exists(await join(folder, "Yfokon.yfdb"))) {
-    await copyFile(prevPath, await join(folder, "Yfokon.yfdb"));
+  if(!(await exists(await join(newPath, "Yfokon.yfdb")))) {
+    await copyFile(prevPath, await join(newPath, "Yfokon.yfdb"));
   }
 
   await reloadDb()
-
-  return folder as string;
 }
 
 /**
@@ -85,9 +94,7 @@ export async function getDbFolder(): Promise<string> {
     await config.save()
     try {
       await create("Yfokon.yfdb", { baseDir: BaseDirectory.AppConfig })
-    } catch (error) {
-      console.warn("Db already exist")
-    }
+    } catch (_) {}
     return (await appConfigDir());
   }
   return dbFolder as string

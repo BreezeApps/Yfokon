@@ -108,7 +108,7 @@ export function ModalForm({
     type === "board"
       ? "bg-[#F0F0F0] dark:bg-gray-800"
       : type !== "task"
-      ? "rounded bg-blue-500 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700"
+      ? "bg-gray-200 hover:bg-gray-400 text-gray-800 px-1 rounded float-left inline"
       : previousData !== undefined
       ? "inline-block ml-auto place-items-center rounded-md border border-transparent text-center text-sm transition-all text-slate-600 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       : "bg-gray-200 hover:bg-gray-400 text-gray-800 py-0.5 px-1 rounded float-left inline"
@@ -142,7 +142,7 @@ export function ModalForm({
             >
               <img
                 className={`${type === "board" ? "dark:invert" : ""} ${
-                  type === "task" ? "h-5" : "h-6"
+                  type === "task" ? "h-5" : type === "collection" ? "h-4" : "h-6"
                 }`}
                 src={
                   previousData !== undefined

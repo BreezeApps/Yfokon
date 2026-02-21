@@ -16,7 +16,7 @@ type props = {
     _date?: Date,
     color?: string,
     _collection_id?: string,
-    _id?: number
+    _id?: number,
   ) => void;
   reloadList?: boolean;
   setReloadList: (reload: boolean) => void;
@@ -42,6 +42,24 @@ export function Tabs({
     { id: 0, name: "test", color: "0" },
   ]);
 
+  const handleCreateCollection = async (
+    _type: "board" | "collection" | "task",
+    name: string,
+    _description?: string,
+    _date?: Date,
+    color?: string,
+    _collection_id?: string,
+    _id?: number,
+  ) => {
+    await dbService.createCollection({
+      board_id: currentBoard,
+      names: name,
+      color: color === undefined ? null : color,
+      id: 0,
+    });
+    setReloadList(true);
+  };
+
   useEffect(() => {
     async function fetchBoards() {
       setAllBoards(await dbService.getAllBoards());
@@ -65,7 +83,7 @@ export function Tabs({
                   style={{
                     height: "34px",
                     minWidth: "80px", // largeur minimale
-                    maxWidth: "200px", // largeur max
+                    maxWidth: "400px", // largeur max
                     flex: "1 1 auto", // occupe l’espace dispo et peut se réduire
                     textAlign: "center",
                     lineHeight: "22px",
@@ -84,7 +102,7 @@ export function Tabs({
                         ? "var(--color-gray-900)"
                         : board.color,
                     color: getTextColor(
-                      board?.color !== null ? board.color : "#101828"
+                      board?.color !== null ? board.color : "#101828",
                     ),
                     whiteSpace: "nowrap", // évite le retour à la ligne
                     overflow: "hidden",
@@ -92,6 +110,16 @@ export function Tabs({
                   }}
                 >
                   {board.name}
+                  {currentBoard === board.id ? (
+                    <ModalForm
+                      id="three-step"
+                      type="collection"
+                      onCreate={handleCreateCollection}
+                      classname="pl-6 pt-3"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </button>
               ))}
             <ModalForm

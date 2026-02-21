@@ -371,9 +371,11 @@ function App({
             window.matchMedia("(prefers-color-scheme: dark)").matches)
       );
       changeLanguage(typeof lang === "string" ? lang ?? "en-US" : "en-US");
+      setReloadList(false)
     };
     const initBoards = async () => {
       setAllBoards((await dbService?.getAllBoards()) ?? []);
+      setReloadList(false)
     };
     initBoards();
     initOptions();
@@ -450,7 +452,6 @@ function App({
           boardId={currentBoard}
           reloadList={reloadList}
           setReloadList={setReloadList}
-          currentBoard={currentBoard}
           contextMenuCollection={displayCollectionMenu}
           contextMenuTask={displayTaskMenu}
           setDescription={setDescription}
