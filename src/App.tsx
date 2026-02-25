@@ -74,6 +74,7 @@ function App({
   >([{ id: 0, name: "test", color: null }]);
   const [showTaskInfo, setShowTaskInfo] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
   const { show } = useContextMenu();
 
@@ -444,8 +445,8 @@ function App({
         setOpen={setShowModal}
       />
       <div
-        /* style={{ height: "calc(100vh - 51px)" }} */
-        className="mt-15 w-full dark:bg-gray-900 text-gray-900 dark:text-white"
+        style={{ height: "calc(100vh - 51px)", marginTop: "51px" }}
+        className="w-full dark:bg-gray-900 text-gray-900 dark:text-white"
       >
         <ListContainer
           dbService={dbService}
@@ -455,15 +456,20 @@ function App({
           contextMenuCollection={displayCollectionMenu}
           contextMenuTask={displayTaskMenu}
           setDescription={setDescription}
+          setName={setName}
           setDuedate={setDueDate}
           setShowTaskInfo={setShowTaskInfo}
         />
       </div>
       <div
-        className={`p-3 sm:p-4 rounded-2xl fixed bottom-4 right-4 sm:top-0 sm:bottom-auto sm:right-0 sm:rounded-none max-w-[calc(100%-2rem)] sm:max-w-sm bg-[#cecece] dark:bg-gray-600 ${
+        className={`p-3 sm:p-4 rounded-2xl fixed bottom-4 right-4 sm:top-0 sm:bottom-auto sm:right-0 sm:rounded-1xl max-w-[calc(100%-2rem)] sm:max-w-sm bg-[#cecece] dark:bg-gray-600 ${
           showTaskInfo === true ? "" : "hidden"
         } text-sm sm:text-base`}
       >
+        <p>
+          <strong>{t("Name")} :</strong> <br></br>
+          {name}
+        </p>
         <p>
           <strong>{t("Description")} :</strong> <br></br>
           {description}

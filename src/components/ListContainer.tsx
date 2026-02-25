@@ -22,6 +22,7 @@ export function ListContainer({
   contextMenuCollection,
   contextMenuTask,
   setDescription,
+  setName,
   setDuedate,
   setShowTaskInfo,
 }: {
@@ -33,6 +34,7 @@ export function ListContainer({
   contextMenuTask: (e: React.MouseEvent, id: number) => void;
   setShowTaskInfo: (show: boolean) => void;
   setDescription: (description: string) => void;
+  setName: (name: string) => void;
   setDuedate: (description: string) => void;
 }) {
   const [board, setBoard] = useState<Board>({
@@ -158,7 +160,7 @@ export function ListContainer({
       style={{ background: board.color === null ? "" : board.color }}
       className="h-full"
     >
-      <div className="p-4 sm:p-6 sm:pt-0 sm:pl-12 h-fit overflow-x-auto">
+      <div className="p-4 sm:p-6 sm:pt-2 sm:pl-12 h-fit overflow-x-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 min-w-fit">
           {Array.isArray(collections) &&
             collections
@@ -171,7 +173,7 @@ export function ListContainer({
                   <div
                     id="five-step"
                     key={collection?.id}
-                    className="relative flex flex-col rounded-lg bg-gray-300 dark:bg-blue-950 shadow-sm border border-slate-200 dark:border-blue-700 min-w-[200px] sm:min-w-[240px] gap-1 p-1.5 h-fit"
+                    className="relative flex flex-col rounded-lg bg-gray-300 dark:bg-blue-950 shadow-sm border border-slate-200 dark:border-blue-700 min-w-50 sm:min-w-60 gap-1 p-1.5 h-fit"
                   >
                   <h3
                     onContextMenu={(e) => {
@@ -246,6 +248,7 @@ export function ListContainer({
                           }}
                           style={{ userSelect: "none", cursor: "pointer" }}
                           onMouseOver={() => {
+                            setName(task.names || "")
                             setDescription(
                               task.descriptions === null
                                 ? ""
@@ -274,7 +277,7 @@ export function ListContainer({
                             }}
                           />
                           <span
-                            className="pl-2"
+                            className="pl-2 truncate"
                             style={{ userSelect: "none", cursor: "pointer" }}
                           >
                             {task.names}
