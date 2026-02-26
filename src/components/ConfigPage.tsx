@@ -62,8 +62,8 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
     }
   }
 
-  function saveParams() {
-    setDbFolder({ reloadDb, dbService, newPath: dbPath || "" })
+  async function saveParams() {
+    if (await getDbPath() !== dbPath) setDbFolder({ reloadDb, dbService, newPath: dbPath || "" })
     setLanguageFromString(language)
     saveTheme(theme)
     setShow(false)
@@ -100,7 +100,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
     <AboutPage show={showAbout} setShow={setShowAbout} />
     <div
       hidden={!show}
-      className={`z-[48] top-0 h-full w-full absolute bg-black/50`}
+      className={`z-48 top-0 h-full w-full absolute bg-black/50`}
     >
       {/* <Button onClick={() => setShow(false)} variant={"ghost"}>
         <img className="h-6 ml-2" src="/icons/fermer.svg" />
