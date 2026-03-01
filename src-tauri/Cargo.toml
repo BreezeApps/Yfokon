@@ -1,6 +1,6 @@
 [package]
 name = "yfokon"
-version = "0.9.1"
+version = "0.9.2"
 description = "Application de gestion de taches et listes"
 authors = ["marvideomc.pro@gmail.com"]
 edition = "2021"

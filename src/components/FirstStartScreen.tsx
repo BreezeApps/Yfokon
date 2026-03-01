@@ -13,7 +13,6 @@ import {
   changeLanguage,
   getCurrentLanguage,
   getLanguages,
-  setLanguageFromString,
 } from "@/lib/i18n";
 import { CheckCircle2 } from "lucide-react";
 
@@ -54,17 +53,17 @@ export function FirstStartScreen({ show }: { show: Dispatch<SetStateAction<boole
   }
 
   function saveParams() {
-    setLanguageFromString(language);
+    changeLanguage(language);
     saveTheme(theme);
     show(false)
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 z-50 p-6">
+    <div className="fixed inset-0 flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 z-50 p-6">
       <div className="w-full max-w-2xl space-y-8 animate-fade-in">
         {/* Header */}
         <div className="text-center space-y-2 mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold bg-linear-to-r from-blue-600 to-blue-800 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
             {t("Welcome")}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-lg">
@@ -153,7 +152,7 @@ export function FirstStartScreen({ show }: { show: Dispatch<SetStateAction<boole
         {/* Action Button */}
         <div className="pt-6">
           <Button
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
             onClick={async () => {
               saveParams();
             }}

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { changeLanguage, getCurrentLanguage, getLanguages, setLanguageFromString } from "../lib/i18n";
+import { changeLanguage, getCurrentLanguage, getLanguages } from "../lib/i18n";
 import { useEffect, useState } from "react";
 import { DatabaseService } from "../lib/db/dbClass";
 import { message } from "@tauri-apps/plugin-dialog";
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { chooseDbFolder, getDbPath, setConfig, setDbFolder } from "@/lib/db/dbManager";
+import { chooseDbFolder, getConfig, getDbPath, setConfig, setDbFolder } from "@/lib/db/dbManager";
 import { AboutPage } from "./AboutPage";
 
 type props = {
@@ -55,6 +55,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
   }
 
   async function saveTheme(theme: string) {
+    changeTheme(theme)
     if (theme === "system") {
       await setConfig("theme", "system");
     } else {
@@ -64,8 +65,16 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
 
   async function saveParams() {
     if (await getDbPath() !== dbPath) setDbFolder({ reloadDb, dbService, newPath: dbPath || "" })
-    setLanguageFromString(language)
+    changeLanguage(language);
     saveTheme(theme)
+    setShow(false)
+  }
+
+  async function cancelSaveParams() {
+    setDbPath(await getDbPath())
+    setLanguage(getCurrentLanguage())
+    localStorage.theme = await getConfig("theme")
+    setTheme(await getConfig("theme") as string || "system")
     setShow(false)
   }
 
@@ -80,6 +89,8 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
           : false,
       );
       setUrlSync(await dbService.getOptionByKey("syncUrl"));
+      setTheme(await getConfig("theme") as string || "system")
+      setLanguage(await getConfig("lang") as string || getCurrentLanguage())
     }
     firstload();
   }, [firstReload]);
@@ -126,9 +137,10 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Label htmlFor="theme">{t("theme")}</Label>
             <Select
               onValueChange={(value) => {
-                changeTheme(value);
+                setTheme(value);
               }}
-              defaultValue={localStorage.theme}
+              value={theme}
+              defaultValue={theme}
             >
               <SelectTrigger>
                 <SelectValue placeholder={"Theme"} />
@@ -144,10 +156,10 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
             <Label htmlFor="language">{t("Language")}</Label>
             <Select
               onValueChange={(value) => {
-                changeLanguage(value);
                 setLanguage(value)
               }}
-              defaultValue={getCurrentLanguage()}
+              value={language}
+              defaultValue={language}
             >
               <SelectTrigger>
                 <SelectValue
@@ -228,7 +240,7 @@ export function ConfigPage({ dbService, show, setShow, reloadDb }: props) {
           <Button onClick={() => setShowAbout(true)} style={{ cursor: "pointer" }} className="mr-2">
             {t("A propos")}
           </Button>
-          <Button onClick={() => setShow(false)} style={{ cursor: "pointer" }} className="mr-2">
+          <Button onClick={() => cancelSaveParams()} style={{ cursor: "pointer" }} className="mr-2">
             {t("Cancel")}
           </Button>
           <Button onClick={() => saveParams()} style={{ cursor: "pointer" }}>

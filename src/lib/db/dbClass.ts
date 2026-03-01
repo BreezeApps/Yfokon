@@ -45,7 +45,7 @@ export class DatabaseService {
   async createBackup(): Promise<boolean> {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, "_");
     const filePath = await save({
-      defaultPath: (await path.downloadDir()) + "/" + `task_backup_${date}.yfdb`,
+      defaultPath: (await path.downloadDir()) + "/" + `Yfokon_backup_${date}.yfdb`,
     });
     if (!filePath) return false;
     try {

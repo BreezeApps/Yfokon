@@ -125,9 +125,6 @@ export function getLanguages() {
  */
 export async function changeLanguage(language: string) {
   i18n.changeLanguage(language);
-}
-
-export async function setLanguageFromString(language: string) {
   await setConfig("lang", language)
 }
 
