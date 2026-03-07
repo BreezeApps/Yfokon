@@ -32,22 +32,29 @@ export function LoadApp() {
 
     /* await checkForAppUpdates(true) */
 
-    const service = await DatabaseService.create();
-    setDbService(service);
-    const config = await load("config.json");
-    setCurrentBoard(parseInt((await config.get("lastOpenBoard")) ?? "1"));
+    try {
+      const service = await DatabaseService.create();
+      setDbService(service);
+      const config = await load("config.json");
+      setCurrentBoard(parseInt((await config.get("lastOpenBoard")) ?? "1"));
+    } catch (error) {
+      throw new Error("Le bdd wsh");
+    }
 
     hideLoading();
   }
 
-  useEffect(() => {
-    async function init() {
-      const config = await load("config.json");
-      if (!(await config.has("dbFolder"))) {
-        setShowFirstScreen(true);
-      }
+  async function init() {
+    const config = await load("config.json");
+    if (!(await config.has("dbFolder"))) {
+      setShowFirstScreen(true);
+      hideLoading();
     }
+  }
+
+  useEffect(() => {
     init();
+    initDatabase();
   }, []);
 
   getCurrentWindow().onCloseRequested(async (event) => {
@@ -60,25 +67,19 @@ export function LoadApp() {
     exit();
   });
 
-  useEffect(() => {
-    initDatabase();
-  }, []);
-
-  if (!dbService) {
-    return null;
-  }
-
   return (
     <ErrorBoundary>
       {showFirstScreen ? (
         <FirstStartScreen show={setShowFirstScreen} />
-      ) : (
+      ) : dbService ? (
         <App
           dbService={dbService}
           reloadDb={initDatabase}
           currentBoard={currentBoard}
           setCurrentBoard={setCurrentBoard}
         />
+      ) : (
+        <h1>Ca marche pas</h1>
       )}
     </ErrorBoundary>
   );
