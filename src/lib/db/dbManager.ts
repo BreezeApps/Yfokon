@@ -4,6 +4,7 @@ import { join, appConfigDir, BaseDirectory } from "@tauri-apps/api/path";
 import { load } from "@tauri-apps/plugin-store";
 import { DatabaseService } from "./dbClass";
 import { t } from "i18next";
+import path from "path";
 
 /**
  * The function `getConfig` asynchronously loads a JSON configuration file and retrieves a specific key
@@ -134,7 +135,7 @@ export async function getDbPath(): Promise<string> {
   const config = await load("config.json");
   const dbFolder = await config.get("dbFolder");
   if (dbFolder === null || dbFolder === undefined) {
-    await config.set("dbFolder", await appConfigDir());
+    await config.set("dbFolder", await appConfigDir() + "/Yfokon.yfdb");
     await config.save();
     try {
       await create("Yfokon.yfdb", { baseDir: BaseDirectory.AppConfig });

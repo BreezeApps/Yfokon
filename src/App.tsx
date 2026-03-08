@@ -73,6 +73,11 @@ function App({
     { id: number; name: string; color: string | null }[]
   >([{ id: 0, name: "test", color: null }]);
   const [showTaskInfo, setShowTaskInfo] = useState<boolean>(false);
+  // track the tooltip (task info bubble) position relative to the viewport
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
   const [description, setDescription] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
@@ -459,12 +464,21 @@ function App({
           setName={setName}
           setDuedate={setDueDate}
           setShowTaskInfo={setShowTaskInfo}
+          setTooltipPos={setTooltipPos}
         />
       </div>
       <div
-        className={`p-3 sm:p-4 rounded-2xl fixed bottom-4 right-4 sm:top-0 sm:bottom-auto sm:right-0 sm:rounded-1xl max-w-[calc(100%-2rem)] sm:max-w-sm bg-[#cecece] dark:bg-gray-600 ${
-          showTaskInfo === true ? "" : "hidden"
-        } text-sm sm:text-base`}
+        className={`p-2 rounded-lg bg-[#cecece] dark:bg-gray-600 text-xs sm:text-sm shadow-lg transition-opacity duration-150 break-words whitespace-normal ${
+          showTaskInfo === true ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        style={{
+          position: "absolute",
+          left: tooltipPos.x + 12,
+          top: tooltipPos.y + 12,
+          // allow the tooltip to grow with content but stay within viewport
+          maxWidth: "60vw",
+          zIndex: 50,
+        }}
       >
         <p>
           <strong>{t("Name")} :</strong> <br></br>

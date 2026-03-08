@@ -24,6 +24,7 @@ export function ListContainer({
   setDescription,
   setName,
   setDuedate,
+  setTooltipPos,
   setShowTaskInfo,
 }: {
   dbService: DatabaseService;
@@ -33,6 +34,7 @@ export function ListContainer({
   contextMenuCollection: (e: React.MouseEvent, id: number) => void;
   contextMenuTask: (e: React.MouseEvent, id: number) => void;
   setShowTaskInfo: (show: boolean) => void;
+  setTooltipPos: (pos: { x: number; y: number }) => void;
   setDescription: (description: string) => void;
   setName: (name: string) => void;
   setDuedate: (description: string) => void;
@@ -247,8 +249,10 @@ export function ListContainer({
                             contextMenuTask(e, task.id);
                           }}
                           style={{ userSelect: "none", cursor: "pointer" }}
-                          onMouseOver={() => {
-                            setName(task.names || "")
+                          onMouseMove={(e) => {
+                            // update hover info and tooltip position
+                            setTooltipPos({ x: e.clientX, y: e.clientY });
+                            setName(task.names || "");
                             setDescription(
                               task.descriptions === null
                                 ? ""
