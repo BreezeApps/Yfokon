@@ -4,7 +4,6 @@ import { join, appConfigDir, BaseDirectory } from "@tauri-apps/api/path";
 import { load } from "@tauri-apps/plugin-store";
 import { DatabaseService } from "./dbClass";
 import { t } from "i18next";
-import path from "path";
 
 /**
  * The function `getConfig` asynchronously loads a JSON configuration file and retrieves a specific key
