@@ -4,13 +4,13 @@ import { getVersion } from "@tauri-apps/api/app"
 import { useEffect, useState, useMemo } from "react";
 import { Mail, Globe, Code2, User, X, Calendar } from "lucide-react";
 import i18n, { getDate } from "../lib/i18n";
+import { openUrl } from "@tauri-apps/plugin-opener"
 
 type props = {
   show: boolean;
   setShow: (show: boolean) => void;
 };
 
-// Contact info constant - avoids recreation on every render
 const CONTACT_INFO = {
   email: "marvideomc.pro@gmail.com",
   website: "https://marvideo.fr",
@@ -56,7 +56,7 @@ export function AboutPage({ show, setShow }: props) {
 
   return (
     <div
-      className="z-[49] top-0 h-full w-full fixed bg-black/50 flex items-center justify-center p-3 sm:p-4"
+      className="z-49 top-0 h-full w-full fixed bg-black/50 flex items-center justify-center p-3 sm:p-4"
       onClick={() => setShow(false)}
       role="presentation"
     >
@@ -65,7 +65,7 @@ export function AboutPage({ show, setShow }: props) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-950 p-4 sm:p-6 md:p-8 relative flex-shrink-0">
+        <div className="bg-linear-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-950 p-4 sm:p-6 md:p-8 relative shrink-0">
           <button
             onClick={() => setShow(false)}
             className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-all duration-200 hover:scale-110"
@@ -83,7 +83,7 @@ export function AboutPage({ show, setShow }: props) {
         <div className="p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6 md:space-y-8 overflow-y-auto flex-1">
           {/* Version */}
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 pb-4 sm:pb-5 md:pb-6 border-b border-gray-200 dark:border-gray-700">
-            <Code2 size={iconSize.lg} className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+            <Code2 size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5 sm:mt-0" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t("Version")}</p>
               <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white break-all">
@@ -94,7 +94,7 @@ export function AboutPage({ show, setShow }: props) {
 
           {/* Build Date */}
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 pb-4 sm:pb-5 md:pb-6 border-b border-gray-200 dark:border-gray-700">
-            <Calendar size={iconSize.lg} className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+            <Calendar size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5 sm:mt-0" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t("BuildDate")}</p>
               <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white break-all">
@@ -105,7 +105,7 @@ export function AboutPage({ show, setShow }: props) {
 
           {/* Creator */}
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 pb-4 sm:pb-5 md:pb-6 border-b border-gray-200 dark:border-gray-700">
-            <User size={iconSize.lg} className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+            <User size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5 sm:mt-0" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t("CreateBy")}</p>
               <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white">Marvideo</p>
@@ -119,9 +119,13 @@ export function AboutPage({ show, setShow }: props) {
             </h3>
             <a
               href={`mailto:${CONTACT_INFO.email}`}
+              target="_blank"
+              onClick={() => {
+                openUrl(`mailto:${CONTACT_INFO.email}`)
+              }}
               className="flex items-center gap-3 sm:gap-4 group hover:bg-gray-50 dark:hover:bg-gray-800/50 p-2.5 sm:p-3 md:p-4 rounded-lg transition-all duration-200 active:bg-gray-100 dark:active:bg-gray-700"
             >
-              <Mail size={iconSize.lg} className="text-purple-600 dark:text-purple-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <Mail size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 group-hover:scale-110 transition-transform" />
               <span className="text-purple-600 dark:text-purple-400 group-hover:underline font-medium text-sm sm:text-base break-all">
                 {CONTACT_INFO.email}
               </span>
@@ -136,10 +140,13 @@ export function AboutPage({ show, setShow }: props) {
             <a
               href={CONTACT_INFO.website}
               target="_blank"
+              onClick={() => {
+                openUrl(`${CONTACT_INFO.website}`)
+              }}
               rel="noopener noreferrer"
               className="flex items-center gap-3 sm:gap-4 group hover:bg-gray-50 dark:hover:bg-gray-800/50 p-2.5 sm:p-3 md:p-4 rounded-lg transition-all duration-200 active:bg-gray-100 dark:active:bg-gray-700"
             >
-              <Globe size={iconSize.lg} className="text-purple-600 dark:text-purple-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <Globe size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 group-hover:scale-110 transition-transform" />
               <span className="text-purple-600 dark:text-purple-400 group-hover:underline font-medium text-sm sm:text-base break-all">
                 {CONTACT_INFO.website}
               </span>
@@ -148,7 +155,7 @@ export function AboutPage({ show, setShow }: props) {
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 dark:bg-gray-800/50 px-4 sm:px-6 md:px-8 py-3 sm:py-4 flex justify-end gap-2 flex-shrink-0 border-t border-gray-200 dark:border-gray-700">
+        <div className="bg-gray-50 dark:bg-gray-800/50 px-4 sm:px-6 md:px-8 py-3 sm:py-4 flex justify-end gap-2 shrink-0 border-t border-gray-200 dark:border-gray-700">
           <Button
             onClick={() => setShow(false)}
             className="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white dark:bg-purple-700 dark:hover:bg-purple-800 text-sm sm:text-base transition-all"

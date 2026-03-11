@@ -429,7 +429,7 @@ function App({
       </ErrorBoundary>
       <div
         id="one-step"
-        className="fixed left-0 top-0 flex w-full justify-between pt-4 text-center bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
+        className="z-48 fixed left-0 top-0 flex w-full justify-between pt-4 text-center bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
       >
         <Tabs
           dbService={dbService}
@@ -468,7 +468,7 @@ function App({
         />
       </div>
       <div
-        className={`p-2 rounded-lg bg-[#cecece] dark:bg-gray-600 text-xs sm:text-sm shadow-lg transition-opacity duration-150 break-words whitespace-normal ${
+        className={`p-2 rounded-lg bg-[#cecece] dark:bg-gray-600 text-xs sm:text-sm shadow-lg transition-opacity duration-150 wrap-break-word whitespace-normal ${
           showTaskInfo === true ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         style={{

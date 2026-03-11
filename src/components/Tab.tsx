@@ -84,7 +84,7 @@ export function Tabs({
                   style={{
                     height: "34px",
                     minWidth: window.innerWidth < 768 ? "60px" : "80px",
-                    maxWidth: "100%",
+                    maxWidth: "25rem",
                     flex: "1 1 auto",
                     textAlign: "center",
                     lineHeight: "22px",
