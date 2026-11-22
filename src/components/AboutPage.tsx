@@ -2,9 +2,9 @@ import { Button } from "./ui/button";
 import { t } from "i18next";
 import { getVersion } from "@tauri-apps/api/app"
 import { useEffect, useState, useMemo } from "react";
-import { Mail, Globe, Code2, User, X, Calendar } from "lucide-react";
 import i18n, { getDate } from "../lib/i18n";
 import { openUrl } from "@tauri-apps/plugin-opener"
+import { Calendar, Code, User, Mail, Globe, Cross } from "@getpapillon/papicons";
 
 type props = {
   show: boolean;
@@ -71,7 +71,7 @@ export function AboutPage({ show, setShow }: props) {
             className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-all duration-200 hover:scale-110"
             aria-label="Close modal"
           >
-            <X size={18} className="sm:w-5 sm:h-5 text-white" />
+            <Cross size={18} className="sm:w-5 sm:h-5 text-white" />
           </button>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white pr-8">
             {t("About")}
@@ -83,7 +83,7 @@ export function AboutPage({ show, setShow }: props) {
         <div className="p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6 md:space-y-8 overflow-y-auto flex-1">
           {/* Version */}
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 pb-4 sm:pb-5 md:pb-6 border-b border-gray-200 dark:border-gray-700">
-            <Code2 size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5 sm:mt-0" />
+            <Code size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5 sm:mt-0" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t("Version")}</p>
               <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white break-all">
@@ -132,7 +132,6 @@ export function AboutPage({ show, setShow }: props) {
             </a>
           </div>
 
-          {/* Website Section */}
           <div className="space-y-2.5 sm:space-y-3">
             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">
               {t("WebSite")}

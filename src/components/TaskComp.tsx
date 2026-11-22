@@ -59,7 +59,7 @@ export function TaskComp({
         task.status === "done"
           ? "bg-gray-200 dark:bg-blue-950 text-slate-500 dark:text-blue-400"
           : "bg-gray-300 dark:bg-blue-950 text-slate-800 dark:text-white"
-      } flex w-full h-6 items-center rounded-md transition-all hover:bg-slate-100 dark:hover:bg-blue-600 dark:focus:bg-blue-400 focus:bg-slate-100 dark:active:bg-blue-400 active:bg-slate-100`}
+      } flex w-full h-6 items-center rounded-md transition-all hover:bg-slate-300 dark:hover:bg-blue-600 dark:focus:bg-blue-400 focus:bg-slate-100 dark:active:bg-blue-400 active:bg-slate-100`}
       onContextMenu={(e) => {
         contextMenuTask(e, task.id);
       }}

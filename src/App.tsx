@@ -477,7 +477,6 @@ function App({
           position: "absolute",
           left: tooltipPos.x + 12,
           top: tooltipPos.y + 12,
-          // allow the tooltip to grow with content but stay within viewport
           maxWidth: "60vw",
           zIndex: 50,
         }}

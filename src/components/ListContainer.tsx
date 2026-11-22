@@ -148,7 +148,7 @@ export function ListContainer({
                   <div
                     id="five-step"
                     key={collection?.id}
-                    className="relative flex flex-col rounded-lg bg-gray-300 dark:bg-blue-950 shadow-sm border border-slate-200 dark:border-blue-700 min-w-50 sm:min-w-60 gap-1 p-1.5 h-fit"
+                    className="relative flex flex-col rounded-lg bg-gray-300 dark:bg-blue-950 shadow-sm border border-slate-400 dark:border-blue-700 min-w-50 sm:min-w-60 gap-1 p-1.5 h-fit"
                   >
                     <h3
                       onContextMenu={(e) => {
@@ -167,14 +167,7 @@ export function ListContainer({
                       }}
                     >
                       <span
-                        className="pr-4 text-2xl"
-                        style={{
-                          color: getTextColor(
-                            collection?.color !== null
-                              ? collection.color
-                              : "#d1d5dc",
-                          ),
-                        }}
+                        className={`pr-4 text-2xl font-[${getTextColor(collection?.color !== null ? collection.color : "#000",)}] dark:font-[${getTextColor(collection?.color !== null ? collection.color : "#101828",)}]`}
                       >
                         {collection?.names}
                       </span>
