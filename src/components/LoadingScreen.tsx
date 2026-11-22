@@ -16,7 +16,7 @@ export function LoadingScreen({ message = "Chargement de Yfokon..." }: LoadingSc
       setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
     }, 500);
     return () => clearInterval(interval);
-  });
+  }, []);
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 z-50 p-4">
 

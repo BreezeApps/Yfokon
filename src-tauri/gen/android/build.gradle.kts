@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 buildscript {
     repositories {
         google()
@@ -22,3 +19,4 @@ allprojects {
 tasks.register("clean").configure {
     delete("build")
 }
+

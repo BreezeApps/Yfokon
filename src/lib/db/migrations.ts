@@ -63,6 +63,36 @@ export class Migrations {
         }
       },
     },
+    {
+      from: "0.8.0",
+      to: "0.9.5",
+      migrate: async (db) => {
+        const columnsBoard: { name: string }[] = await db.select(
+          "PRAGMA table_info(boards);"
+        );
+        const columnsCollections: { name: string }[] = await db.select(
+          "PRAGMA table_info(collections);"
+        );
+        const columnsTasks: { name: string }[] = await db.select(
+          "PRAGMA table_info(tasks);"
+        );
+
+        const hasIsDirtyBoards = columnsBoard.some((col) => col.name === "is_dirty");
+        if (!hasIsDirtyBoards) {
+          await db.execute("ALTER TABLE boards ADD COLUMN is_dirty BOOL NOT NULL DEFAULT FALSE;");
+        }
+        const hasIsDirtyCollections = columnsCollections.some((col) => col.name === "is_dirty");
+        if (!hasIsDirtyCollections) {
+          await db.execute("ALTER TABLE collections ADD COLUMN is_dirty BOOL NOT NULL DEFAULT FALSE;");
+        }
+        const hasIsDirtyTasks = columnsTasks.some((col) => col.name === "is_dirty");
+        if (!hasIsDirtyTasks) {
+          await db.execute("ALTER TABLE tasks ADD COLUMN is_dirty BOOL NOT NULL DEFAULT FALSE;");
+        }
+
+        await db.execute("CREATE TABLE IF NOT EXISTS id_mappings (local_id INTEGER NOT NULL, remote_id TEXT NOT NULL, entity_type TEXT NOT NULL, PRIMARY KEY (local_id, entity_type));")
+      },
+    },
   ];
 
   /* ==================== MIGRATION RUNNER ===================== */

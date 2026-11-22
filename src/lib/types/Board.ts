@@ -14,4 +14,8 @@ type Board = {
     color: string | null
 }
 
-export type { Board };
+type SyncBoardItem = Board & {
+  remote_id?: string;
+}
+
+export type { Board, SyncBoardItem };

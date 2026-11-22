@@ -4,6 +4,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 type LoadingContextType = {
   showLoading: (message?: string) => void;
   hideLoading: () => void;
+  loading: boolean
 };
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
@@ -31,7 +32,7 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
   const hideLoading = () => setVisible(false);
 
   return (
-    <LoadingContext.Provider value={{ showLoading, hideLoading }}>
+    <LoadingContext.Provider value={{ showLoading, hideLoading, loading: visible }}>
       {children}
       {visible && <LoadingScreen message={message} />}
     </LoadingContext.Provider>

@@ -16,4 +16,8 @@ type Collection = {
     color: string | null 
 }
 
-export type { Collection };
+type SyncCollectionItem = Collection & {
+  remote_id?: string;
+}
+
+export type { Collection, SyncCollectionItem };

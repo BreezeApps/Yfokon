@@ -15,6 +15,7 @@ import {
   getLanguages,
 } from "@/lib/i18n";
 import { CheckCircle2 } from "lucide-react";
+import { relaunch } from "@tauri-apps/plugin-process";
 
 export function FirstStartScreen({ show }: { show: Dispatch<SetStateAction<boolean>> }) {
   const [dbPath, setDbPath] = useState<string>("");
@@ -52,10 +53,11 @@ export function FirstStartScreen({ show }: { show: Dispatch<SetStateAction<boole
     }
   }
 
-  function saveParams() {
+  async function saveParams() {
     changeLanguage(language);
     saveTheme(theme);
     show(false)
+    await relaunch()
   }
 
   return (

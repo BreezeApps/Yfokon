@@ -25,6 +25,7 @@ import ContextMenu from "./components/contextMenu";
 import { OnBoarding } from "./components/OnBoarding";
 import { changeLanguage } from "./lib/i18n";
 import { getConfig } from "./lib/db/dbManager";
+import { setupDeepLinkListener } from "./lib/deepLink";
 
 /**
  * The `App` function in this TypeScript React component manages the state and functionality for task
@@ -95,7 +96,7 @@ function App({
     _date?: Date,
     color?: string | null,
     _collection_id?: string,
-    _id?: number
+    _id?: number,
   ) => {
     await dbService?.createBoard({
       id: 0,
@@ -114,7 +115,7 @@ function App({
     date?: Date | undefined,
     color?: string | null,
     _collection_id?: string | undefined,
-    id?: number | undefined
+    id?: number | undefined,
   ) => {
     if (type === "board") {
       await dbService?.updateBoard({
@@ -182,7 +183,7 @@ function App({
         t("Are_Sure", {
           type: t("tab"),
           title: allBoards.find((board) => board.id === boardId)?.name,
-        })
+        }),
       );
       if (deleteConfirm) {
         await dbService?.removeBoard(boardId);
@@ -246,7 +247,7 @@ function App({
           title: await dbService
             ?.getCollectionById(collection_id)
             .then((collection) => collection?.names),
-        })
+        }),
       );
       if (deleteConfirm) {
         await dbService?.removeCollection(collection_id);
@@ -299,26 +300,26 @@ function App({
           task?.names === null
             ? ""
             : task?.names === undefined
-            ? ""
-            : task?.names,
+              ? ""
+              : task?.names,
         description:
           task?.descriptions === null
             ? ""
             : task?.descriptions === undefined
-            ? ""
-            : task?.descriptions,
+              ? ""
+              : task?.descriptions,
         status:
           task?.status === null
             ? ""
             : task?.status === undefined
-            ? ""
-            : task?.status,
+              ? ""
+              : task?.status,
         date:
           task?.due_date === null
             ? new Date()
             : task?.due_date === undefined
-            ? new Date()
-            : task?.due_date,
+              ? new Date()
+              : task?.due_date,
         collection_id:
           task?.collection_id === undefined
             ? "0"
@@ -332,7 +333,7 @@ function App({
           title: await dbService
             ?.getTaskById(task_id)
             .then((task) => task?.names),
-        })
+        }),
       );
       if (deleteConfirm) {
         await dbService?.removeTask(task_id);
@@ -354,11 +355,12 @@ function App({
     }
     async function initBoard() {
       setCurrentBoard(
-        parseInt((await dbService.getOptionByKey("lastOpenBoard")) ?? "1")
+        parseInt((await dbService.getOptionByKey("lastOpenBoard")) ?? "1"),
       );
     }
     initBoard();
     handleNotificationPermission();
+    setupDeepLinkListener()
   }, []);
 
   useEffect(() => {
@@ -374,14 +376,14 @@ function App({
         "dark",
         localStorage.theme === "dark" ||
           (!("theme" in localStorage) &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches)
+            window.matchMedia("(prefers-color-scheme: dark)").matches),
       );
-      changeLanguage(typeof lang === "string" ? lang ?? "en-US" : "en-US");
-      setReloadList(false)
+      changeLanguage(typeof lang === "string" ? (lang ?? "en-US") : "en-US");
+      setReloadList(false);
     };
     const initBoards = async () => {
       setAllBoards((await dbService?.getAllBoards()) ?? []);
-      setReloadList(false)
+      setReloadList(false);
     };
     initBoards();
     initOptions();
@@ -402,7 +404,7 @@ function App({
       setRunBoarding(
         (await dbService?.getOptionByKey("firstStart")) === "true"
           ? true
-          : false
+          : false,
       );
     }, 500);
   }
@@ -469,7 +471,9 @@ function App({
       </div>
       <div
         className={`p-2 rounded-lg bg-[#cecece] dark:bg-gray-600 text-xs sm:text-sm shadow-lg transition-opacity duration-150 wrap-break-word whitespace-normal ${
-          showTaskInfo === true ? "opacity-100" : "opacity-0 pointer-events-none"
+          showTaskInfo === true
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
         }`}
         style={{
           position: "absolute",

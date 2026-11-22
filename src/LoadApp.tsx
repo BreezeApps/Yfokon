@@ -9,6 +9,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import { load } from "@tauri-apps/plugin-store";
 import { FirstStartScreen } from "./components/FirstStartScreen";
+import { AuthProvider } from "./components/AuthContext";
 
 /**
  * The `LoadApp` function in TypeScript React initializes a database service, manages the current board
@@ -69,18 +70,20 @@ export function LoadApp() {
 
   return (
     <ErrorBoundary>
-      {showFirstScreen ? (
-        <FirstStartScreen show={setShowFirstScreen} />
-      ) : dbService ? (
-        <App
-          dbService={dbService}
-          reloadDb={initDatabase}
-          currentBoard={currentBoard}
-          setCurrentBoard={setCurrentBoard}
-        />
-      ) : (
-        <h1>Ca marche pas</h1>
-      )}
+      <AuthProvider dbService={dbService}>
+        {showFirstScreen ? (
+          <FirstStartScreen show={setShowFirstScreen} />
+        ) : dbService ? (
+          <App
+            dbService={dbService}
+            reloadDb={initDatabase}
+            currentBoard={currentBoard}
+            setCurrentBoard={setCurrentBoard}
+          />
+        ) : (
+          <h1>Ca marche pas</h1>
+        )}
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

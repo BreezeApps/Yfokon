@@ -9,6 +9,7 @@ import { Task } from "../types/Task";
 import { setupOptions } from "./setupOptions";
 import { getDbPath } from "./dbManager";
 import { Migrations } from "./migrations";
+import { Mappings } from "../types/Mappings";
 
 /* The DatabaseService class provides methods for interacting with a database, including
 creating, updating, and retrieving data related to boards, collections, and tasks. */
@@ -124,12 +125,12 @@ export class DatabaseService {
   }
 
   /* ==================== BOARDS ==================== */
-  async createBoard(board: Board): Promise<void> {
-    await this.db?.execute("INSERT INTO boards (name, color) VALUES (?, ?);", [board.name, board.color]);
+  async createBoard(board: Board): Promise<Board> {
+    return await this.db?.execute("INSERT INTO boards (name, color) VALUES (?, ?);", [board.name, board.color]) as unknown as Board;
   }
 
-  async updateBoard(board: Board): Promise<void> {
-    await this.db?.execute("UPDATE boards SET name = ?, color = ? WHERE id = ?;", [board.name, board.color, board.id]);
+  async updateBoard(board: Board): Promise<Board> {
+    return await this.db?.execute("UPDATE boards SET name = ?, color = ? WHERE id = ?;", [board.name, board.color, board.id]) as unknown as Board;
   }
 
   async removeBoard(id: number): Promise<void> {
@@ -146,12 +147,12 @@ export class DatabaseService {
   }
 
   /* ==================== COLLECTIONS ==================== */
-  async createCollection(collection: Collection): Promise<void> {
-    await this.db?.execute("INSERT INTO collections (board_id, names, color) VALUES (?, ?, ?);", [collection.board_id, collection.names, collection.color ?? null]);
+  async createCollection(collection: Collection): Promise<Collection> {
+    return await this.db?.execute("INSERT INTO collections (board_id, names, color) VALUES (?, ?, ?);", [collection.board_id, collection.names, collection.color ?? null]) as unknown as Collection;
   }
 
-  async updateCollection(collection: Collection): Promise<void> {
-    await this.db?.execute("UPDATE collections SET names = ?, color = ? WHERE id = ?;", [collection.names, collection.color ?? null, collection.id]);
+  async updateCollection(collection: Collection): Promise<Collection> {
+    return await this.db?.execute("UPDATE collections SET names = ?, color = ? WHERE id = ?;", [collection.names, collection.color ?? null, collection.id]) as unknown as Collection;
   }
 
   async removeCollection(id: number): Promise<void> {
@@ -172,18 +173,18 @@ export class DatabaseService {
   }
 
   /* ==================== TASKS ==================== */
-  async createTask(task: Task): Promise<void> {
-    await this.db?.execute(
+  async createTask(task: Task): Promise<Task> {
+    return await this.db?.execute(
       "INSERT INTO tasks (collection_id, task_order, names, descriptions, due_date, status) VALUES (?, ?, ?, ?, ?, ?);",
       [task.collection_id, task.task_order, task.names ?? null, task.descriptions ?? null, task.due_date ?? null, "pending"]
-    );
+    ) as unknown as Task;
   }
 
-  async updateTask(task: Task): Promise<void> {
-    await this.db?.execute(
+  async updateTask(task: Task): Promise<Task> {
+    return await this.db?.execute(
       "UPDATE tasks SET names = ?, descriptions = ?, due_date = ?, status = ? WHERE id = ?;",
       [task.names ?? null, task.descriptions ?? null, task.due_date ?? null, task.status ?? null, task.id]
-    );
+    ) as unknown as Task;
   }
 
   async updateTaskOrder(task: Task): Promise<void> {
@@ -212,5 +213,68 @@ export class DatabaseService {
 
   async getTasksByBoard(boardId: number): Promise<Task[]> {
     return (await this.db?.select("SELECT * FROM tasks WHERE collection_id IN (SELECT id FROM collections WHERE board_id = ?) ORDER BY task_order;", [boardId])) ?? [];
+  }
+  /* ==================== DIRTY ==================== */
+  async getBoardsByIsDirty(): Promise<Board[]> {
+    return (await this.db?.select("SELECT * FROM boards WHERE is_dirty = 0;")) ?? [];
+  }
+
+  async updateBoardDirty(board: number): Promise<void> {
+    await this.db?.execute(
+      "UPDATE boards SET is_dirty = 1 WHERE id = ?;",
+      [board]
+    );
+  }
+
+  async getCollectionsByIsDirty(): Promise<Collection[]> {
+    return (await this.db?.select("SELECT * FROM collections WHERE is_dirty = 0;")) ?? [];
+  }
+
+  async updateCollectionDirty(collection: number): Promise<void> {
+    await this.db?.execute(
+      "UPDATE collections SET is_dirty = 1 WHERE id = ?;",
+      [collection]
+    );
+  }
+
+  async getTasksByIsDirty(): Promise<Task[]> {
+    return (await this.db?.select("SELECT * FROM tasks WHERE is_dirty = 0;")) ?? [];
+  }
+
+  async updateTaskDirty(task: number): Promise<void> {
+    await this.db?.execute(
+      "UPDATE tasks SET is_dirty = 1 WHERE id = ?;",
+      [task]
+    );
+  }
+  /* ==================== MAPPING ==================== */
+  async createMapping(mapping: Mappings): Promise<void> {
+    await this.db?.execute("INSERT INTO id_mappings (local_id, remote_id, entity_type) VALUES (?, ?, ?);", [mapping.local_id, mapping.remote_id, mapping.entity_type]);
+  }
+
+  async removeMapping(local_id: number): Promise<void> {
+    await this.db?.execute("DELETE FROM id_mappings WHERE local_id = ?;", [local_id]);
+  }
+
+  async getMappingByLocalId(local_id: number, entity_type: "board" | "collection" | "task"): Promise<Mappings | null> {
+    const result: Mappings[] = (await this.db?.select("SELECT * FROM id_mappings WHERE local_id = ? AND entity_type = ?;", [local_id, entity_type])) ?? [];
+    return result.length > 0 ? result[0] : null;
+  }
+
+  async getMappingByRemoteId(remote_id: string, entity_type: "board" | "collection" | "task"): Promise<Mappings | null> {
+    const result: Mappings[] = (await this.db?.select("SELECT * FROM id_mappings WHERE remote_id = ? AND entity_type = ?;", [remote_id, entity_type])) ?? [];
+    return result.length > 0 ? result[0] : null;
+  }
+
+  async upsertLocalBoards(items: { id: string; name: string; color: string | null; }[]) {
+    items.forEach(async (item) => {
+      const local_id = await this.getMappingByRemoteId(item.id, "board")
+      if (local_id) {
+        await this.updateBoard({ id: local_id.local_id, name: item.name, color: item.color })
+      } else {
+        const newBoard = await this.createBoard({ id: 0, name: item.name, color: item.color })
+        await this.createMapping({ local_id: newBoard.id, remote_id: item.id, entity_type: "board" })
+      }
+    })
   }
 }

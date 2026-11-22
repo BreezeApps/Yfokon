@@ -11,14 +11,32 @@ pub fn run() {
     #[cfg(target_os = "linux")]
     set_webkit_env();
 
-    let mut builder = tauri::Builder::default();
+    let mut builder = tauri::Builder::default().plugin(tauri_plugin_shell::init());
 
     #[cfg(desktop)]
     {
-        builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
+        builder = builder
+            .plugin(tauri_plugin_single_instance::init(
+                |_app: &tauri::AppHandle, _args, _cwd| {
+                    /* println!("--- Nouvelle instance détectée ---");
+                    println!("Arguments reçus par Rust : {:?}", args);
+
+                    for arg in args {
+                        println!("Examen de l'argument : {}", arg);
+                        if arg.contains("yfokon://") {
+                            println!("-> Protocole yfokon trouvé ! Envoi au JS...");
+                            /* let _ = app.emit("deep-link-received", arg); */
+                            break;
+                        }
+                    }
+                    println!("----------------------------------"); */
+                },
+            ))
+            .plugin(tauri_plugin_window_state::Builder::default().build());
     }
 
     builder
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_process::init())

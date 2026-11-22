@@ -38,6 +38,8 @@
     "process:allow-restart",
     "process:allow-exit",
     "store:default",
-    "opener:allow-default-urls"
+    "opener:allow-default-urls",
+    "deep-link:default",
+    "deep-link:allow-get-current"
   ]
 }

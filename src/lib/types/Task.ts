@@ -27,4 +27,16 @@ type Task = {
   due_date: Date | null;
 };
 
-export type { Task }
+interface SyncTaskItem {
+  id: number;
+  remote_id?: string;
+  collectionId: string;
+  task_order: number;
+  name: string;
+  descriptions?: string | null;
+  due_date?: string | null;
+  status?: string | null;
+  updatedAt: string;
+}
+
+export type { Task, SyncTaskItem }

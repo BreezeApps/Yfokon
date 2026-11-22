@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name={{name}}
+Exec={{exec}} %u
+Icon={{icon}}
+Categories={{{categories}}}
+Comment={{description}}
+Terminal=false
+MimeType=x-scheme-handler/yfokon;
