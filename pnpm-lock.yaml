@@ -45,29 +45,29 @@ importers:
         specifier: ^2.8.4
         version: 2.8.4
       '@tauri-apps/plugin-fs':
-        specifier: ~2.4.5
-        version: 2.4.5
+        specifier: 2.7.1
+        version: 2.7.1
       '@tauri-apps/plugin-http':
-        specifier: ~2.5.9
-        version: 2.5.9
+        specifier: 2.9.0
+        version: 2.9.0
       '@tauri-apps/plugin-notification':
-        specifier: ~2.3.3
-        version: 2.3.3
+        specifier: 2.8.1
+        version: 2.8.1
       '@tauri-apps/plugin-opener':
-        specifier: ~2.5.5
-        version: 2.5.5
+        specifier: 2.7.3
+        version: 2.7.3
       '@tauri-apps/plugin-process':
-        specifier: ~2.3.1
-        version: 2.3.1
+        specifier: 2.4.0
+        version: 2.4.0
       '@tauri-apps/plugin-sql':
-        specifier: ~2.3.2
-        version: 2.3.2
+        specifier: 2.6.0
+        version: 2.6.0
       '@tauri-apps/plugin-store':
-        specifier: ~2.4.5
-        version: 2.4.5
+        specifier: 2.5.1
+        version: 2.5.1
       '@tauri-apps/plugin-window-state':
-        specifier: ~2.4.1
-        version: 2.4.1
+        specifier: 2.5.0
+        version: 2.5.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1620,29 +1620,29 @@ packages:
   '@tauri-apps/plugin-dialog@2.8.4':
     resolution: {integrity: sha512-+6ZOiXenOaxXwb8qCbBPdT2jX2cFPaVVHGIskrpmJLpmWj+qKRTD6X/z9x7hTdSQn7NedcoXCkWGej4a7dC4lw==}
 
-  '@tauri-apps/plugin-fs@2.4.5':
-    resolution: {integrity: sha512-dVxWWGE6VrOxC7/jlhyE+ON/Cc2REJlM35R3PJX3UvFw2XwYhLGQVAIyrehenDdKjotipjYEVc4YjOl3qq90fA==}
+  '@tauri-apps/plugin-fs@2.7.1':
+    resolution: {integrity: sha512-4TBVjpi/q8PuNzjpkAc2iBGXMTLjOrAyfTiiOL8ORaJCZJRG3tjzmQ4sqs2CMG75FvLyRkOkERfP7AyY4iBNwQ==}
 
-  '@tauri-apps/plugin-http@2.5.9':
-    resolution: {integrity: sha512-lCiY0+vs4HvIUSvZrBs8TC3TiCB0MOPRmiUjTq4prW7SlcJE2jdLeT6KBsJrT9Tlplufl7W1pY6SFAO3gCWxDA==}
+  '@tauri-apps/plugin-http@2.9.0':
+    resolution: {integrity: sha512-q3HTsbyFk3E9H4slJr+egd6KdRF2Fn4BoZFGI3ZHb7PBT9snlsOOlZC5L4Q1+AlDDd6OHdf/KTM6DNUJ0RNMEQ==}
 
-  '@tauri-apps/plugin-notification@2.3.3':
-    resolution: {integrity: sha512-Zw+ZH18RJb41G4NrfHgIuofJiymusqN+q8fGUIIV7vyCH+5sSn5coqRv/MWB9qETsUs97vmU045q7OyseCV3Qg==}
+  '@tauri-apps/plugin-notification@2.8.1':
+    resolution: {integrity: sha512-B+OCJv17XCFQxAhe2+fn2bHqQ1fz/hGnYHeT++yv8+q0daOH5o1ghX7MmxWgoGFp7POaNn4UMONclHeZn65mJA==}
 
-  '@tauri-apps/plugin-opener@2.5.5':
-    resolution: {integrity: sha512-xvzGai5aQds8j8R8RsUK/lW6pGG50YgOYIPLzvkqmkwAj7dfySOD7sGtejRzvVdMmv1EQfKVEFh1MvmDp8QR0g==}
+  '@tauri-apps/plugin-opener@2.7.3':
+    resolution: {integrity: sha512-Nm+v7vLBCDzYZxrmCJhpMgtPsPsKt5myMs7SMU/aBjPOmAFI1RrHfhMz7t5KlxjMOzRcelyNq1/j0pmC9SmBVA==}
 
-  '@tauri-apps/plugin-process@2.3.1':
-    resolution: {integrity: sha512-nCa4fGVaDL/B9ai03VyPOjfAHRHSBz5v6F/ObsB73r/dA3MHHhZtldaDMIc0V/pnUw9ehzr2iEG+XkSEyC0JJA==}
+  '@tauri-apps/plugin-process@2.4.0':
+    resolution: {integrity: sha512-GddrmsSLAYrLa/yTXlXK/YRDzUgYeeOnUXTbiyvJWkmI424RmDPD3FVLeqcon7rv6O6ZfhBilcrHWnSo7o6hIQ==}
 
-  '@tauri-apps/plugin-sql@2.3.2':
-    resolution: {integrity: sha512-4VDXhcKXVpyh5KKpnTGAn6q2DikPHH+TXGh9ZDQzULmG/JEz1RDvzQStgBJKddiukRbYEZ8CGIA2kskx+T+PpA==}
+  '@tauri-apps/plugin-sql@2.6.0':
+    resolution: {integrity: sha512-UfP4p3Zwh6N7ODRMgnMgXSN6rfUxFo7YXHnRjX8L3Vx7i+IV0bh+r8puwv2OnGq04SLDZFY+LvotxN+pJdZ1Zg==}
 
-  '@tauri-apps/plugin-store@2.4.5':
-    resolution: {integrity: sha512-bVD9riKzf+WKYm1L8uXD1CMDTC/eaFS2Cbjcgq+39ahChtVGnyDCbzug3HpjgpZMw78yoAVMqHOAEjqJ/kD9YQ==}
+  '@tauri-apps/plugin-store@2.5.1':
+    resolution: {integrity: sha512-lm/84hFRWHKayZI08p4upYYvhujcULXZLIJuATz3Ky6ZUN0hlmgvOIUytl8iTJA/no0nfhnaxDDHrPk1C5psaQ==}
 
-  '@tauri-apps/plugin-window-state@2.4.1':
-    resolution: {integrity: sha512-OuvdrzyY8Q5Dbzpj+GcrnV1iCeoZbcFdzMjanZMMcAEUNy/6PH5pxZPXpaZLOR7whlzXiuzx0L9EKZbH7zpdRw==}
+  '@tauri-apps/plugin-window-state@2.5.0':
+    resolution: {integrity: sha512-ySI/32fpC1ZTslIZ00/wf9HujyDnkG3OPL16uuLjG53y1hTgjIJ9G2VPuOL1IV8GVr3xeF6lnr6h2T73HuGXow==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2811,6 +2811,10 @@ packages:
 
   source-map@0.5.6:
     resolution: {integrity: sha512-MjZkVp0NHr5+TPihLcadqnlVoGIoWo4IBHptutGh9wI3ttUYvCG26HkSuDi+K6lsZ25syXJXcctwgyVCt//xqA==}
+    engines: {node: '>=0.10.0'}
+
+  source-map@0.5.7:
+    resolution: {integrity: sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==}
     engines: {node: '>=0.10.0'}
 
   source-map@0.6.1:
@@ -4504,35 +4508,35 @@ snapshots:
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-fs@2.4.5':
+  '@tauri-apps/plugin-fs@2.7.1':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-http@2.5.9':
+  '@tauri-apps/plugin-http@2.9.0':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-notification@2.3.3':
+  '@tauri-apps/plugin-notification@2.8.1':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-opener@2.5.5':
+  '@tauri-apps/plugin-opener@2.7.3':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-process@2.3.1':
+  '@tauri-apps/plugin-process@2.4.0':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-sql@2.3.2':
+  '@tauri-apps/plugin-sql@2.6.0':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-store@2.4.5':
+  '@tauri-apps/plugin-store@2.5.1':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
-  '@tauri-apps/plugin-window-state@2.4.1':
+  '@tauri-apps/plugin-window-state@2.5.0':
     dependencies:
       '@tauri-apps/api': 2.12.5
 
@@ -5241,7 +5245,7 @@ snapshots:
       metro-symbolicate: 0.87.3
       nullthrows: 1.1.1
       ob1: 0.87.3
-      source-map: 0.5.6
+      source-map: 0.5.7
     transitivePeerDependencies:
       - supports-color
 
@@ -5251,7 +5255,7 @@ snapshots:
       invariant: 2.2.4
       metro-source-map: 0.87.3(supports-color@8.1.1)
       nullthrows: 1.1.1
-      source-map: 0.5.6
+      source-map: 0.5.7
       vlq: 1.0.1
 
   metro-transform-plugins@0.87.3(supports-color@8.1.1):
@@ -5320,7 +5324,7 @@ snapshots:
       mime-types: 3.0.2
       nullthrows: 1.1.1
       serialize-error: 2.1.0
-      source-map: 0.5.6
+      source-map: 0.5.7
       throat: 5.0.0
       ws: 7.5.14
       yargs: 17.7.3
@@ -5883,6 +5887,8 @@ snapshots:
       source-map: 0.6.1
 
   source-map@0.5.6: {}
+
+  source-map@0.5.7: {}
 
   source-map@0.6.1: {}
 
