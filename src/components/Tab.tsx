@@ -5,6 +5,7 @@ import { Board } from "@/lib/types/Board";
 import { getTextColor } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { t } from "i18next";
+import { Gears } from "@getpapillon/papicons"
 
 type props = {
   dbService: DatabaseService;
@@ -102,14 +103,12 @@ export function Tabs({
                       board.color === null
                         ? "var(--color-gray-900)"
                         : board.color,
-                    color: getTextColor(
-                      board?.color !== null ? board.color : "#101828",
-                    ),
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     fontSize: window.innerWidth < 768 ? "0.75rem" : "1rem",
                   }}
+                  className={`font-[${getTextColor(board?.color !== null ? board.color : "#000",)}] dark:font-[${getTextColor(board?.color !== null ? board.color : "#101828",)}]`}
                 >
                   {board.name}
                   {currentBoard === board.id ? (
@@ -117,7 +116,7 @@ export function Tabs({
                       id="three-step"
                       type="collection"
                       onCreate={handleCreateCollection}
-                      classname="pl-6 pt-3"
+                      classname="pl-6"
                     />
                   ) : (
                     ""
@@ -140,7 +139,7 @@ export function Tabs({
             setShowConfig(true);
           }}
         >
-          <img className={`dark:invert`} src={"/icons/config.svg"} />
+          <Gears size={35} />
         </TooltipTrigger>
         <TooltipContent>
           <p>{t("app_config")}</p>
