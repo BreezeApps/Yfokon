@@ -117,7 +117,7 @@ export function Tabs({
                       id="three-step"
                       type="collection"
                       onCreate={handleCreateCollection}
-                      classname="pl-6 pt-3"
+                      classname="pl-6"
                     />
                   ) : (
                     ""

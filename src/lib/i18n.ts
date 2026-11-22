@@ -60,6 +60,71 @@ export function getDate(date: Date) {
   return formatteur.format(date);
 }
 
+export function getFormattedDate(date: Date | string | number): string {
+  const validDate = date instanceof Date ? date : new Date(date);
+
+  if (Number.isNaN(validDate.getTime())) {
+    return "";
+  }
+
+  const normalizedLocale = i18n.language.replace("_", "-");
+  const isMonthFirstAMPM = /^en(-US)?$/i.test(normalizedLocale);
+
+  if (isMonthFirstAMPM) {
+    const formatter = new Intl.DateTimeFormat(normalizedLocale, {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    const parts = formatter.formatToParts(validDate);
+    const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((p) => p.type === type)?.value ?? "";
+
+    const month = getPart("month");
+    const day = getPart("day");
+    const year = getPart("year");
+    const hour = getPart("hour");
+    const minute = getPart("minute");
+    const dayPeriod = getPart("dayPeriod").toUpperCase();
+
+    return `${month}/${day}/${year} ${hour}:${minute} ${dayPeriod}`.trim();
+  }
+
+  const formatter = new Intl.DateTimeFormat(normalizedLocale, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const parts = formatter.formatToParts(validDate);
+  const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+
+  const day = getPart("day");
+  const month = getPart("month");
+  const year = getPart("year");
+  const hour = getPart("hour");
+  const minute = getPart("minute");
+
+  return `${day}/${month}/${year} ${hour}:${minute}`;
+}
+
+export function isMonthFirstLocale(): boolean {
+  const normalizedLocale = i18n.language.replace("_", "-");
+  return /^en(-US)?$/i.test(normalizedLocale);
+}
+
+export function getDateFormatPlaceholder(): string {
+  return isMonthFirstLocale() ? "MM/DD/YYYY hh:mm AM/PM" : "DD/MM/YYYY hh:mm";
+}
+
 /**
  * The function `getRelativeTime` calculates the relative time difference between the current date and
  * a target date in seconds, minutes, hours, or days and formats it using Intl.RelativeTimeFormat.

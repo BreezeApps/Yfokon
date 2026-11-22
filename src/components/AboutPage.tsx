@@ -12,7 +12,7 @@ type props = {
 };
 
 const CONTACT_INFO = {
-  email: "marvideomc.pro@gmail.com",
+  email: "contact@marvideo.fr",
   website: "https://marvideo.fr",
 };
 
@@ -148,7 +148,7 @@ export function AboutPage({ show, setShow }: props) {
             >
               <Globe size={iconSize.lg} className="text-purple-600 dark:text-purple-400 shrink-0 group-hover:scale-110 transition-transform" />
               <span className="text-purple-600 dark:text-purple-400 group-hover:underline font-medium text-sm sm:text-base break-all">
-                {CONTACT_INFO.website}
+                {CONTACT_INFO.website} (In Maintenance)
               </span>
             </a>
           </div>

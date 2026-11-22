@@ -1,7 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomProvider, DatePicker } from "rsuite";
 
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { Button } from "../ui/button";
@@ -9,6 +8,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { DateTimePicker } from "../ui/datetimepicker";
 
 type ModalFormProps = {
   type: "task" | "collection" | "board";
@@ -184,7 +184,7 @@ export function ModalForm({
         <Dialog.Overlay className={`fixed inset-0 bg-black/50`} />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto max-w-[calc(100%-2rem)] sm:max-w-lg"
+          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg max-h-[120vh] overflow-y-auto w-[calc(100%-2rem)] sm:max-w-lg"
         >
           <Dialog.Title className="text-lg font-bold">
             {t(
@@ -203,7 +203,7 @@ export function ModalForm({
           </Dialog.Title>
 
           <div className="mt-4">
-            <Label>{t("Name")}</Label>
+            <Label className="mb-2">{t("Name")}</Label>
             <Input
               type="text"
               value={name}
@@ -213,7 +213,7 @@ export function ModalForm({
           </div>
           {type === "task" && (
             <div className="mt-4">
-              <Label>{t("Description")}</Label>
+              <Label className="mb-2">{t("Description")}</Label>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -223,28 +223,15 @@ export function ModalForm({
           )}
           {type === "task" && (
             <div className="mt-4">
-              <Label>{t("Date")}</Label>
-              <CustomProvider
-                theme={
-                  localStorage.getItem("theme") as "light" | "dark" | undefined
-                }
-              >
-                <DatePicker
-                  oneTap
-                  style={{ width: "100%" }}
-                  format="dd/MM/yyyy HH:mm"
-                  placement="topStart"
-                  value={date}
-                  onChange={(e) => setDate(e === null ? new Date() : e)}
-                />
-              </CustomProvider>
+              <Label className="mb-2">{t("Date")}</Label>
+              <DateTimePicker onChange={(e) => setDate(e === null ? new Date() : e)} />
             </div>
           )}
 
           {type === "collection" ||
             (type === "board" && (
               <div className="mt-4">
-                <Label>{t("Color")}</Label>
+                <Label className="mb-2">{t("Color")}</Label>
                 <Input
                   type="color"
                   value={color ? color : "#000000"}
@@ -255,7 +242,7 @@ export function ModalForm({
             ))}
           {type === "collection" && (
             <div className="mt-4">
-              <Label>{t("Color")}</Label>
+              <Label className="mb-2">{t("Color")}</Label>
               <Input
                 type="color"
                 value={color ? color : "#000000"}
